@@ -1,0 +1,185 @@
+/* Global Styles for Queens Puzzle Game */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #1a1a2e;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Main container */
+#app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 48px;
+  color: #00d9ff;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 18px;
+  color: #ccc;
+}
+
+/* Game container */
+#game-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* Board container */
+#board-container {
+  background-color: #16213e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Game board grid */
+#game-board {
+  display: grid;
+  gap: 2px;
+  background-color: #333;
+  padding: 2px;
+  border-radius: 5px;
+}
+
+/* Individual cell */
+.cell {
+  width: 60px;
+  height: 60px;
+  background-color: #2a2a3e;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  font-size: 32px;
+  font-weight: bold;
+  user-select: none;
+}
+
+.cell:hover {
+  background-color: #3a3a4e;
+  transform: scale(1.05);
+}
+
+.cell.empty {
+  background-color: #2a2a3e;
+}
+
+.cell.marked {
+  color: #ff6b6b;
+}
+
+.cell.queen {
+  background-color: #00d9ff;
+  color: #1a1a2e;
+}
+
+.cell.auto-marked {
+  color: #888;
+  font-size: 24px;
+}
+
+/* Side panel */
+#side-panel {
+  background-color: #16213e;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  min-width: 250px;
+}
+
+#side-panel h2 {
+  color: #00d9ff;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.stat {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.stat-label {
+  color: #aaa;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  color: #00d9ff;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Buttons */
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #00d9ff;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-weight: bold;
+  margin: 10px 5px;
+}
+
+button:hover {
+  background-color: #00b8d4;
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header h1 {
+    font-size: 36px;
+  }
+
+  .cell {
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+  }
+}
