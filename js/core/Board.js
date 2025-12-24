@@ -11,11 +11,10 @@ export class Board {
   constructor(size = GAME_CONFIG.BOARD_SIZE) {
     this.size = size;
     this.grid = [];
-    this.queens = []; // Array of queen positions: [{row, col}, ...]
+    this.queens = [];
     this.initializeGrid();
   }
 
-  // Create empty grid
   initializeGrid() {
     this.grid = [];
     for (let row = 0; row < this.size; row++) {
@@ -49,7 +48,6 @@ export class Board {
 
   // Check if a queen can be placed at this position
   canPlaceQueen(row, col) {
-    // Check if cell is available
     const cell = this.getCell(row, col);
     if (!cell || (!cell.isEmpty() && !cell.isMarked())) {
       return false;
@@ -107,6 +105,7 @@ export class Board {
       if (success) {
         this.queens[this.queens.length] = { row, col };
         this.autoMarkAdjacentCells(row, col);
+        this.autoMarkCellRegion(cell.regionId);
         return true;
       }
     }
@@ -121,14 +120,16 @@ export class Board {
 
       cell.clear();
       this.autoClearAdjacentCells(row, col);
+      this.autoClearCellRegion(cell.regionId);
+
       this.queens.forEach((queen) => {
         this.autoMarkAdjacentCells(queen.row, queen.col);
+        this.autoMarkCellRegion(this.getCell(queen.row, queen.col).regionId);
       });
       return true;
     }
   }
 
-  // Auto-mark all cells that must be empty after placing a queen
   autoMarkAdjacentCells(queenRow, queenCol) {
     // Mark all cells in the same row
     for (let col = 0; col < this.size; col++) {
@@ -140,7 +141,6 @@ export class Board {
       }
     }
 
-    // Mark all cells in the same column
     for (let row = 0; row < this.size; row++) {
       if (row !== queenRow) {
         const cell = this.getCell(row, queenCol);
@@ -150,7 +150,6 @@ export class Board {
       }
     }
 
-    // Mark all adjacent cells (1 spot radius diagonally)
     const adjacentPositions = getAdjacentPositions(queenRow, queenCol);
     adjacentPositions.forEach((pos) => {
       if (pos.row !== queenRow || pos.col !== queenCol) {
@@ -200,6 +199,28 @@ export class Board {
     });
   }
 
+  autoMarkCellRegion(regionId) {
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        const cell = this.getCell(row, col);
+        if (cell.regionId === regionId && cell.isEmpty()) {
+          cell.placeMark();
+        }
+      }
+    }
+  }
+
+  autoClearCellRegion(regionId) {
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        const cell = this.getCell(row, col);
+        if (cell.regionId === regionId && cell.isMarked()) {
+          cell.clear();
+        }
+      }
+    }
+  }
+
   // Get all queens on the board
   getQueens() {
     return [...this.queens];
@@ -218,7 +239,11 @@ export class Board {
   // Clear the entire board
   clear() {
     this.queens = [];
-    this.initializeGrid();
+    for (let row = 0; row < this.size; row++) {
+      for (let col = 0; col < this.size; col++) {
+        this.grid[row][col].clear();
+      }
+    }
   }
 
   // Get board state as 2D array of symbols (for debugging)

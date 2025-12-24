@@ -7,7 +7,7 @@ export class Cell {
     this.row = row;
     this.col = col;
     this.state = GAME_CONFIG.CELL_STATES.EMPTY;
-    this.regionId = regionId; // Which colored region this cell belongs to
+    this.regionId = regionId;
   }
 
   // Check if cell is empty

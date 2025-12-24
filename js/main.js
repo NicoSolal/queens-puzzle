@@ -3,11 +3,15 @@
 import { Board } from "./core/Board.js";
 import { GAME_CONFIG } from "./utils/constants.js";
 import { ThemeManager } from "./ui/ThemeManager.js";
+import { getPuzzle } from "./data/puzzles.js";
+import { PuzzleGenerator } from "./utils/PuzzleGenerator.js";
 
 // Game state
 let board = null;
 let gameStarted = false;
 let themeManager = null;
+let currentPuzzle = null;
+let difficulty = null;
 
 // Initialize the game
 function init() {
@@ -17,13 +21,24 @@ function init() {
   themeManager = ThemeManager.getInstance();
   themeManager.initializeUI();
 
-  // Create board
-  board = new Board(GAME_CONFIG.BOARD_SIZE);
+  difficulty = GAME_CONFIG.DIFFICULTY.EASY;
 
-  // Render the board
-  renderBoard();
+  // currentPuzzle = getPuzzle("expert_1");
+  currentPuzzle = PuzzleGenerator.generate(difficulty.boardSize);
 
-  // Set up event listeners
+  if (!currentPuzzle) {
+    console.error("Failed to load puzzle!");
+    return;
+  }
+
+  console.log("Loaded puzzle:", currentPuzzle.name);
+
+  board = new Board(currentPuzzle.size);
+
+  board.setRegions(currentPuzzle.regions);
+
+  createBoardDOM();
+
   setupEventListeners();
 
   console.log("Game initialized!");
@@ -33,47 +48,44 @@ function init() {
 }
 
 // Render the board to the DOM
-function renderBoard() {
+function createBoardDOM() {
   const boardElement = document.getElementById("game-board");
-  boardElement.innerHTML = ""; // Clear existing content
+  boardElement.innerHTML = "";
 
-  // Set grid template based on board size
   boardElement.style.gridTemplateColumns = `repeat(${board.size}, 60px)`;
   boardElement.style.gridTemplateRows = `repeat(${board.size}, 60px)`;
 
-  // Create cells
   for (let row = 0; row < board.size; row++) {
     for (let col = 0; col < board.size; col++) {
-      const cellDiv = createCellElement(row, col);
+      const cell = board.getCell(row, col);
+      const cellDiv = document.createElement("div");
+
+      cellDiv.className = "cell";
+      cellDiv.dataset.row = row;
+      cellDiv.dataset.col = col;
+
+      const regionColor = cell.getRegionColor();
+      if (regionColor) cellDiv.style.backgroundColor = regionColor;
+
       boardElement.appendChild(cellDiv);
     }
   }
+}
+
+function updateBoardDisplay() {
+  const cellDivs = document.querySelectorAll(".cell");
+
+  cellDivs.forEach((div) => {
+    const r = parseInt(div.dataset.row);
+    const c = parseInt(div.dataset.col);
+    const cell = board.getCell(r, c);
+
+    updateCellDisplay(div, cell);
+  });
 
   updateStats();
 }
 
-// Create a single cell element
-function createCellElement(row, col) {
-  const cell = board.getCell(row, col);
-  const cellDiv = document.createElement("div");
-
-  cellDiv.className = "cell";
-  cellDiv.dataset.row = row;
-  cellDiv.dataset.col = col;
-
-  // Set region color if exists
-  const regionColor = cell.getRegionColor();
-  if (regionColor) {
-    cellDiv.style.backgroundColor = regionColor;
-  }
-
-  // Set cell content based on state
-  updateCellDisplay(cellDiv, cell);
-
-  return cellDiv;
-}
-
-// Update cell display based on its state
 function updateCellDisplay(cellDiv, cell) {
   cellDiv.className = "cell " + cell.state;
 
@@ -126,9 +138,8 @@ function handleCellClick(row, col) {
   const success = board.handleCellClick(row, col);
 
   if (success) {
-    renderBoard(); // Re-render entire board for simplicity (optimize later)
+    updateBoardDisplay();
 
-    // Check if game is complete
     if (board.isComplete()) {
       console.log("Puzzle complete!");
       alert("Congratulations! You solved the puzzle!");
@@ -146,7 +157,7 @@ function updateStats() {
 // Reset the game
 function resetGame() {
   board.clear();
-  renderBoard();
+  updateBoardDisplay();
   console.log("Game reset");
 }
 

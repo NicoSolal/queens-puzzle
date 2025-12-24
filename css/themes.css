@@ -13,7 +13,6 @@
   --text-muted: #aaa;
   --border-color: #444;
   --grid-line: #333;
-  --mark-color: #ff6b6b;
   --mark-muted: #888;
 }
 
@@ -30,7 +29,6 @@
   --text-muted: #999;
   --border-color: #555;
   --grid-line: #444;
-  --mark-color: #cf6679;
   --mark-muted: #777;
 }
 
@@ -47,7 +45,6 @@
   --text-muted: #757575;
   --border-color: #bdbdbd;
   --grid-line: #e0e0e0;
-  --mark-color: #b90f0f;
   --mark-muted: #9e9e9e;
 }
 
@@ -64,7 +61,6 @@
   --text-muted: #8d6e63;
   --border-color: #bcaaa4;
   --grid-line: #d7ccc8;
-  --mark-color: #c0392b;
   --mark-muted: #a1887f;
 }
 
@@ -89,7 +85,7 @@ body {
 }
 
 .cell.marked {
-  color: var(--mark-color);
+  color: var(--bg-secondary);
 }
 
 .cell.queen {

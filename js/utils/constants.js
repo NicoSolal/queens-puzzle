@@ -17,17 +17,18 @@ export const GAME_CONFIG = {
     EASY: {
       name: "Easy",
       boardSize: 6,
-      regions: 4,
     },
     MEDIUM: {
       name: "Medium",
       boardSize: 8,
-      regions: 6,
     },
     HARD: {
       name: "Hard",
       boardSize: 10,
-      regions: 8,
+    },
+    EXPERT: {
+      name: "Expert",
+      boardSize: 12,
     },
   },
 
@@ -43,16 +44,18 @@ export const GAME_CONFIG = {
 
   // Colors for regions (colored blobs)
   REGION_COLORS: [
-    "#FF6B6B", // Red
-    "#4ECDC4", // Teal
-    "#45B7D1", // Blue
-    "#FFA07A", // Light Salmon
-    "#98D8C8", // Mint
-    "#F7DC6F", // Yellow
-    "#BB8FCE", // Purple
-    "#85C1E2", // Sky Blue
-    "#F8B500", // Orange
-    "#7DCEA0", // Green
+    "#001524",
+    "#e9c46a",
+    "#6d2e46",
+    "#d00000",
+    "#F8B500",
+    "#ff7d00",
+    "#264653",
+    "#6a994e",
+    "#78290f",
+    "#7DCEA0",
+    "#da2c38",
+    "#457b9d",
   ],
 
   // UI Colors
