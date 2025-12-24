@@ -2,14 +2,20 @@
 
 import { Board } from "./core/Board.js";
 import { GAME_CONFIG } from "./utils/constants.js";
+import { ThemeManager } from "./ui/ThemeManager.js";
 
 // Game state
 let board = null;
 let gameStarted = false;
+let themeManager = null;
 
 // Initialize the game
 function init() {
   console.log("Queens Puzzle Game - Initializing...");
+
+  // Initialize theme manager
+  themeManager = ThemeManager.getInstance();
+  themeManager.initializeUI();
 
   // Create board
   board = new Board(GAME_CONFIG.BOARD_SIZE);

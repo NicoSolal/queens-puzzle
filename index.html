@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Queens Puzzle Game</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/themes.css" />
   </head>
   <body>
     <div id="app">
       <header>
-        <h1>♛ Queens Puzzle ♛</h1>
+        <h1>Queens ♛</h1>
         <p>Place queens so no two queens touch each other</p>
       </header>
 
+      <button id="theme-btn" title="Change Theme">Themes Selection</button>
+      <div id="theme-menu">
+        <button class="theme-option" data-theme="default">Blue/Gray</button>
+        <button class="theme-option" data-theme="dark">Dark</button>
+        <button class="theme-option" data-theme="light">Light</button>
+        <button class="theme-option" data-theme="cream">Cream</button>
+      </div>
+
       <div id="game-container">
-        <!-- Game Board -->
         <div id="board-container">
           <div id="game-board"></div>
         </div>
 
-        <!-- Side Panel -->
         <div id="side-panel">
           <h2>Game Stats</h2>
 
@@ -38,23 +45,16 @@
             <div class="stat-value" id="score">0</div>
           </div>
 
-          <hr style="margin: 20px 0; border-color: #444" />
+          <hr />
 
           <button id="reset-btn">Reset Game</button>
           <button id="hint-btn" disabled>Get Hint</button>
           <button id="undo-btn" disabled>Undo</button>
 
-          <hr style="margin: 20px 0; border-color: #444" />
+          <hr />
 
-          <h3 style="color: #00d9ff; margin-bottom: 10px">How to Play:</h3>
-          <ol
-            style="
-              color: #aaa;
-              font-size: 14px;
-              line-height: 1.6;
-              padding-left: 20px;
-            "
-          >
+          <h3>How to Play:</h3>
+          <ol class="instructions">
             <li>Click a cell to mark it</li>
             <li>Click a marked cell to place a queen</li>
             <li>Queens cannot touch each other</li>

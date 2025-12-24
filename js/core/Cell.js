@@ -10,19 +10,24 @@ export class Cell {
     this.regionId = regionId; // Which colored region this cell belongs to
   }
 
+  // Check if cell is empty
   isEmpty() {
     return this.state === GAME_CONFIG.CELL_STATES.EMPTY;
   }
 
+  // Check if cell has a queen
   hasQueen() {
     return this.state === GAME_CONFIG.CELL_STATES.QUEEN;
   }
 
+  // Check if cell is marked (X)
   isMarked() {
     return this.state === GAME_CONFIG.CELL_STATES.MARKED;
   }
 
+  // Set cell state
   setState(newState) {
+    // Validate state
     const validStates = Object.values(GAME_CONFIG.CELL_STATES);
     if (!validStates.includes(newState)) {
       console.error(`Invalid state: ${newState}`);
@@ -33,7 +38,7 @@ export class Cell {
     return true;
   }
 
-  // Place a mark (X)
+  // Place a mark (X) - user action
   placeMark() {
     if (this.isEmpty()) {
       this.state = GAME_CONFIG.CELL_STATES.MARKED;
@@ -44,17 +49,9 @@ export class Cell {
 
   // Place a queen
   placeQueen() {
+    // Can only place queen on empty or marked cells
     if (this.isEmpty() || this.state === GAME_CONFIG.CELL_STATES.MARKED) {
       this.state = GAME_CONFIG.CELL_STATES.QUEEN;
-      return true;
-    }
-    return false;
-  }
-
-  // Auto-mark (when a queen is placed, mark adjacent cells)
-  autoMark() {
-    if (this.isEmpty()) {
-      this.state = GAME_CONFIG.CELL_STATES.MARKED;
       return true;
     }
     return false;

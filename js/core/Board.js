@@ -34,7 +34,7 @@ export class Board {
     return this.grid[row][col];
   }
 
-  // Set regions (colored blobs)
+  // Set regions (colored blobs) on the board
   setRegions(regionsData) {
     // regionsData format: [{ id: 0, cells: [{row, col}, {row, col}] }, ...]
     regionsData.forEach((region) => {
@@ -47,6 +47,45 @@ export class Board {
     });
   }
 
+  // Check if a queen can be placed at this position
+  canPlaceQueen(row, col) {
+    // Check if cell is available
+    const cell = this.getCell(row, col);
+    if (!cell || (!cell.isEmpty() && !cell.isMarked())) {
+      return false;
+    }
+
+    // Check row - no other queens
+    for (let c = 0; c < this.size; c++) {
+      if (c !== col && this.getCell(row, c)?.hasQueen()) {
+        return false;
+      }
+    }
+
+    // Check column - no other queens
+    for (let r = 0; r < this.size; r++) {
+      if (r !== row && this.getCell(r, col)?.hasQueen()) {
+        return false;
+      }
+    }
+
+    // Check adjacent cells (1 spot radius including diagonals)
+    const adjacentPositions = getAdjacentPositions(row, col);
+    for (const pos of adjacentPositions) {
+      if (
+        (pos.row !== row || pos.col !== col) &&
+        isValidPosition(pos.row, pos.col, this.size)
+      ) {
+        const adjacentCell = this.getCell(pos.row, pos.col);
+        if (adjacentCell?.hasQueen()) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   // Handle cell click - main interaction logic
   handleCellClick(row, col) {
     const cell = this.getCell(row, col);
@@ -57,17 +96,36 @@ export class Board {
       return cell.placeMark();
     }
 
-    // If marked -> place queen and auto-mark adjacent cells
-    if (cell.state === GAME_CONFIG.CELL_STATES.MARKED) {
+    // If marked -> try to place queen (check if valid first)
+    if (cell.isMarked()) {
+      if (!this.canPlaceQueen(row, col)) {
+        console.log("Cannot place queen here - violates rules!");
+        return false;
+      }
+
       const success = cell.placeQueen();
       if (success) {
-        this.queens.push({ row, col });
+        this.queens[this.queens.length] = { row, col };
         this.autoMarkAdjacentCells(row, col);
         return true;
       }
     }
 
-    return false;
+    if (cell.hasQueen()) {
+      const index = this.queens.findIndex(
+        (q) => q.row === row && q.col === col
+      );
+      if (index !== -1) {
+        this.queens.splice(index, 1);
+      }
+
+      cell.clear();
+      this.autoClearAdjacentCells(row, col);
+      this.queens.forEach((queen) => {
+        this.autoMarkAdjacentCells(queen.row, queen.col);
+      });
+      return true;
+    }
   }
 
   // Auto-mark all cells that must be empty after placing a queen
@@ -75,14 +133,20 @@ export class Board {
     // Mark all cells in the same row
     for (let col = 0; col < this.size; col++) {
       if (col !== queenCol) {
-        this.getCell(queenRow, col)?.autoMark();
+        const cell = this.getCell(queenRow, col);
+        if (cell?.isEmpty()) {
+          cell.placeMark();
+        }
       }
     }
 
     // Mark all cells in the same column
     for (let row = 0; row < this.size; row++) {
       if (row !== queenRow) {
-        this.getCell(row, queenCol)?.autoMark();
+        const cell = this.getCell(row, queenCol);
+        if (cell?.isEmpty()) {
+          cell.placeMark();
+        }
       }
     }
 
@@ -91,8 +155,46 @@ export class Board {
     adjacentPositions.forEach((pos) => {
       if (pos.row !== queenRow || pos.col !== queenCol) {
         const cell = this.getCell(pos.row, pos.col);
-        if (cell && isValidPosition(pos.row, pos.col, this.size)) {
-          cell.autoMark();
+        if (
+          cell &&
+          isValidPosition(pos.row, pos.col, this.size) &&
+          cell.isEmpty()
+        ) {
+          cell.placeMark();
+        }
+      }
+    });
+  }
+
+  autoClearAdjacentCells(queenRow, queenCol) {
+    for (let col = 0; col < this.size; col++) {
+      if (col !== queenCol) {
+        const cell = this.getCell(queenRow, col);
+        if (cell?.isMarked()) {
+          cell.clear();
+        }
+      }
+    }
+
+    for (let row = 0; row < this.size; row++) {
+      if (row !== queenRow) {
+        const cell = this.getCell(row, queenCol);
+        if (cell?.isMarked()) {
+          cell.clear();
+        }
+      }
+    }
+
+    const adjacentPositions = getAdjacentPositions(queenRow, queenCol);
+    adjacentPositions.forEach((pos) => {
+      if (pos.row !== queenRow || pos.col !== queenCol) {
+        const cell = this.getCell(pos.row, pos.col);
+        if (
+          cell &&
+          isValidPosition(pos.row, pos.col, this.size) &&
+          cell.isMarked()
+        ) {
+          cell.clear();
         }
       }
     });
