@@ -1,0 +1,155 @@
+{
+  "easy": [
+    {
+      "id": "e_001",
+      "size": 6,
+      "regions": [
+        {
+          "id": 0,
+          "cells": [
+            { "row": 0, "col": 0 },
+            { "row": 0, "col": 1 },
+            { "row": 1, "col": 1 }
+          ]
+        },
+        {
+          "id": 1,
+          "cells": [
+            { "row": 1, "col": 0 },
+            { "row": 2, "col": 0 }
+          ]
+        },
+        {
+          "id": 2,
+          "cells": [
+            { "row": 0, "col": 2 },
+            { "row": 0, "col": 3 },
+            { "row": 0, "col": 4 },
+            { "row": 0, "col": 5 },
+            { "row": 1, "col": 2 },
+            { "row": 1, "col": 3 },
+            { "row": 1, "col": 4 },
+            { "row": 1, "col": 5 },
+            { "row": 2, "col": 4 }
+          ]
+        },
+        {
+          "id": 3,
+          "cells": [
+            { "row": 4, "col": 0 },
+            { "row": 4, "col": 1 },
+            { "row": 5, "col": 0 },
+            { "row": 5, "col": 1 },
+            { "row": 5, "col": 2 }
+          ]
+        },
+        {
+          "id": 4,
+          "cells": [
+            { "row": 2, "col": 1 },
+            { "row": 2, "col": 2 },
+            { "row": 2, "col": 3 },
+            { "row": 3, "col": 0 },
+            { "row": 3, "col": 1 },
+            { "row": 3, "col": 2 },
+            { "row": 3, "col": 3 },
+            { "row": 4, "col": 2 },
+            { "row": 4, "col": 3 },
+            { "row": 5, "col": 3 }
+          ]
+        },
+        {
+          "id": 5,
+          "cells": [
+            { "row": 2, "col": 5 },
+            { "row": 3, "col": 5 },
+            { "row": 4, "col": 5 },
+            { "row": 5, "col": 5 },
+            { "row": 3, "col": 4 },
+            { "row": 4, "col": 4 },
+            { "row": 5, "col": 4 }
+          ]
+        }
+      ],
+      "solution": [
+        { "row": 0, "col": 1 },
+        { "row": 1, "col": 3 }
+      ]
+    },
+    {
+      "id": "e_002",
+      "size": 6,
+      "regions": [
+        {
+          "id": 0,
+          "cells": [
+            { "row": 2, "col": 1 },
+            { "row": 3, "col": 1 },
+            { "row": 4, "col": 1 }
+          ]
+        },
+        {
+          "id": 1,
+          "cells": [{ "row": 0, "col": 5 }]
+        },
+        {
+          "id": 2,
+          "cells": [
+            { "row": 0, "col": 0 },
+            { "row": 0, "col": 1 },
+            { "row": 0, "col": 2 },
+            { "row": 0, "col": 3 },
+            { "row": 0, "col": 4 },
+            { "row": 1, "col": 1 },
+            { "row": 1, "col": 2 },
+            { "row": 1, "col": 3 },
+            { "row": 1, "col": 4 },
+            { "row": 1, "col": 5 },
+            { "row": 2, "col": 2 }
+          ]
+        },
+        {
+          "id": 3,
+          "cells": [
+            { "row": 1, "col": 0 },
+            { "row": 2, "col": 0 },
+            { "row": 3, "col": 0 },
+            { "row": 4, "col": 0 },
+            { "row": 5, "col": 0 },
+            { "row": 5, "col": 1 }
+          ]
+        },
+        {
+          "id": 4,
+          "cells": [
+            { "row": 2, "col": 3 },
+            { "row": 2, "col": 4 },
+            { "row": 2, "col": 5 },
+            { "row": 3, "col": 2 },
+            { "row": 3, "col": 3 },
+            { "row": 3, "col": 4 },
+            { "row": 3, "col": 5 },
+            { "row": 4, "col": 2 },
+            { "row": 4, "col": 3 },
+            { "row": 4, "col": 4 },
+            { "row": 4, "col": 5 },
+            { "row": 5, "col": 2 },
+            { "row": 5, "col": 3 },
+            { "row": 5, "col": 5 }
+          ]
+        },
+        {
+          "id": 5,
+          "cells": [{ "row": 5, "col": 4 }]
+        }
+      ],
+      "solution": [
+        { "row": 0, "col": 1 },
+        { "row": 1, "col": 3 }
+      ]
+    }
+  ],
+  "medium": [],
+  "hard": [],
+  "expert": []
+}

@@ -3,8 +3,9 @@
 import { Board } from "./core/Board.js";
 import { GAME_CONFIG } from "./utils/constants.js";
 import { ThemeManager } from "./ui/ThemeManager.js";
-import { getPuzzle } from "./data/puzzles.js";
 import { PuzzleGenerator } from "./utils/PuzzleGenerator.js";
+import { getPuzzleById } from "./data/puzzles.js";
+import { HintManager } from "./core/HintManager.js";
 
 // Game state
 let board = null;
@@ -12,19 +13,26 @@ let gameStarted = false;
 let themeManager = null;
 let currentPuzzle = null;
 let difficulty = null;
+let hintManager = null;
+let isDragging = false;
+
+// Timer
+let secondsElapsed = 0;
+let timerInterval = null;
 
 // Initialize the game
-function init() {
+async function init() {
   console.log("Queens Puzzle Game - Initializing...");
 
   // Initialize theme manager
   themeManager = ThemeManager.getInstance();
   themeManager.initializeUI();
 
-  difficulty = GAME_CONFIG.DIFFICULTY.EASY;
+  difficulty = GAME_CONFIG.DIFFICULTY.MEDIUM;
 
   // currentPuzzle = getPuzzle("expert_1");
   currentPuzzle = PuzzleGenerator.generate(difficulty.boardSize);
+  // currentPuzzle = await getPuzzleById("e_002");
 
   if (!currentPuzzle) {
     console.error("Failed to load puzzle!");
@@ -32,12 +40,16 @@ function init() {
   }
 
   console.log("Loaded puzzle:", currentPuzzle.name);
+  console.log("Current Puzzle Data:", JSON.stringify(currentPuzzle));
 
   board = new Board(currentPuzzle.size);
 
   board.setRegions(currentPuzzle.regions);
 
+  hintManager = new HintManager(board);
+
   createBoardDOM();
+  startTimer();
 
   setupEventListeners();
 
@@ -101,7 +113,6 @@ function updateCellDisplay(cellDiv, cell) {
       break;
   }
 
-  // Preserve region color
   const cell_obj = board.getCell(
     parseInt(cellDiv.dataset.row),
     parseInt(cellDiv.dataset.col)
@@ -112,26 +123,55 @@ function updateCellDisplay(cellDiv, cell) {
   }
 }
 
-// Set up event listeners
 function setupEventListeners() {
   const boardElement = document.getElementById("game-board");
 
-  // Cell click handler
-  boardElement.addEventListener("click", (e) => {
+  boardElement.addEventListener("mousedown", (e) => {
     const cellDiv = e.target.closest(".cell");
     if (!cellDiv) return;
 
+    isDragging = true;
     const row = parseInt(cellDiv.dataset.row);
     const col = parseInt(cellDiv.dataset.col);
 
     handleCellClick(row, col);
   });
 
-  // Reset button
+  boardElement.addEventListener(
+    "mouseenter",
+    (e) => {
+      if (!isDragging) return;
+
+      const cellDiv = e.target.closest(".cell");
+      if (!cellDiv) return;
+
+      const row = parseInt(cellDiv.dataset.row);
+      const col = parseInt(cellDiv.dataset.col);
+
+      const cell = board.getCell(row, col);
+      if (cell.isEmpty()) {
+        handleCellClick(row, col);
+      }
+    },
+    true
+  );
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
+
   document.getElementById("reset-btn").addEventListener("click", resetGame);
+
+  document.getElementById("play-again-btn").addEventListener("click", () => {
+    document.getElementById("victory-overlay").classList.add("hidden");
+    resetGame();
+  });
+
+  document.getElementById("close-victory-btn").addEventListener("click", () => {
+    document.getElementById("victory-overlay").classList.add("hidden");
+  });
 }
 
-// Handle cell click
 function handleCellClick(row, col) {
   console.log(`Cell clicked: (${row}, ${col})`);
 
@@ -142,24 +182,78 @@ function handleCellClick(row, col) {
 
     if (board.isComplete()) {
       console.log("Puzzle complete!");
-      alert("Congratulations! You solved the puzzle!");
+      stopTimer();
+      showVictoryScreen();
     }
   }
 }
 
-// Update statistics display
+function showVictoryScreen() {
+  const overlay = document.getElementById("victory-overlay");
+  const finalTime = document.getElementById("timer").textContent;
+
+  const score = Math.max(0, 4000 - secondsElapsed * 3);
+
+  document.getElementById("final-time").textContent = finalTime;
+  document.getElementById("final-score").textContent = score;
+
+  overlay.classList.remove("hidden");
+}
+
 function updateStats() {
   document.getElementById(
     "queens-count"
   ).textContent = `${board.getQueenCount()} / ${board.size}`;
 }
 
-// Reset the game
 function resetGame() {
   board.clear();
   updateBoardDisplay();
+  startTimer();
   console.log("Game reset");
 }
 
-// Start the game when DOM is ready
 document.addEventListener("DOMContentLoaded", init);
+
+document.getElementById("hint-btn").addEventListener("click", () => {
+  const hint = hintManager.getHint();
+
+  if (hint.row !== undefined) {
+    const cellDiv = document.querySelector(
+      `.cell[data-row="${hint.row}"][data-col="${hint.col}"]`
+    );
+
+    cellDiv.classList.add("hint-highlight");
+    console.log(`Hint: ${hint.message}`);
+
+    setTimeout(() => cellDiv.classList.remove("hint-highlight"), 2000);
+  } else {
+    alert(hint.message);
+  }
+});
+
+function startTimer() {
+  stopTimer();
+  secondsElapsed = 0;
+  updateTimerDisplay();
+
+  timerInterval = setInterval(() => {
+    secondsElapsed++;
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(secondsElapsed / 60);
+  const seconds = secondsElapsed % 60;
+
+  const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  document.getElementById("timer").textContent = formattedTime;
+}

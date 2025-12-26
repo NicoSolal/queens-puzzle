@@ -89,12 +89,10 @@ export class Board {
     const cell = this.getCell(row, col);
     if (!cell) return false;
 
-    // If empty -> place mark (X)
     if (cell.isEmpty()) {
       return cell.placeMark();
     }
 
-    // If marked -> try to place queen (check if valid first)
     if (cell.isMarked()) {
       if (!this.canPlaceQueen(row, col)) {
         console.log("Cannot place queen here - violates rules!");

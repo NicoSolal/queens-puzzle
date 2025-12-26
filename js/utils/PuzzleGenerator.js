@@ -53,7 +53,7 @@ export class PuzzleGenerator {
         if (isSafe(row, col, queens)) {
           queens.push({ row, col });
           if (backtrack(row + 1)) return true;
-          queens.pop(); // Undo
+          queens.pop();
         }
       }
       return false;
