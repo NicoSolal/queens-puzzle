@@ -63,31 +63,30 @@ header p {
 /* Game board grid */
 #game-board {
   display: grid;
-  gap: 2px;
-  background-color: #333;
-  padding: 2px;
-  border-radius: 5px;
+  gap: 4px;
+  background-color: var(--grid-line);
+  padding: 4px;
+  border-radius: 8px;
+  margin: 0 auto;
 }
 
 /* Individual cell */
 .cell {
-  width: 60px;
-  height: 60px;
-  background-color: #2a2a3e;
-  border: 1px solid #444;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  font-size: 32px;
+  transition: transform 0.15s ease-out, background-color 0.2s;
   font-weight: bold;
   user-select: none;
+  transform-origin: center;
 }
 
 .cell:hover {
-  background-color: #3a3a4e;
-  transform: scale(1.05);
+  transform: scale(1.15);
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .cell.empty {

@@ -60,8 +60,12 @@ function createBoardDOM() {
   const boardElement = document.getElementById("game-board");
   boardElement.innerHTML = "";
 
-  const boardSize = Math.min(window.innerWidth * 0.9, 600);
-  const cellSize = Math.floor(boardSize / board.size);
+  const maxAvailableWidth = Math.min(window.innerWidth * 0.95, 600);
+
+  const totalGapSpace = (board.size + 1) * 4;
+  const availableForCells = maxAvailableWidth - totalGapSpace;
+
+  const cellSize = Math.floor(availableForCells / board.size);
 
   boardElement.style.gridTemplateColumns = `repeat(${board.size}, ${cellSize}px)`;
   boardElement.style.gridTemplateRows = `repeat(${board.size}, ${cellSize}px)`;
@@ -72,6 +76,10 @@ function createBoardDOM() {
       const cellDiv = document.createElement("div");
 
       cellDiv.className = "cell";
+      cellDiv.style.width = `${cellSize}px`;
+      cellDiv.style.height = `${cellSize}px`;
+      cellDiv.style.fontSize = `${Math.floor(cellSize * 0.6)}px`;
+
       cellDiv.dataset.row = row;
       cellDiv.dataset.col = col;
 
