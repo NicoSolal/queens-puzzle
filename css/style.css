@@ -45,8 +45,11 @@ header p {
 /* Game container */
 #game-container {
   display: flex;
-  gap: 40px;
+  flex-direction: row;
+  gap: 20px;
   align-items: flex-start;
+  justify-content: center;
+  width: 100%;
 }
 
 /* Board container */
@@ -352,4 +355,25 @@ button.secondary {
 
 #back-to-menu-btn {
   margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  #game-container {
+    flex-direction: column; /* Mobile: Stacked vertically */
+    align-items: center;
+    gap: 15px;
+  }
+
+  header h1 {
+    font-size: 32px; /* Smaller title for phones */
+  }
+
+  .menu-card {
+    width: 95%; /* Menu takes up more screen space on mobile */
+    padding: 20px;
+  }
+
+  .menu-btn {
+    width: 100%; /* Buttons fill the menu width */
+  }
 }

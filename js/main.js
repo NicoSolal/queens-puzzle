@@ -60,8 +60,11 @@ function createBoardDOM() {
   const boardElement = document.getElementById("game-board");
   boardElement.innerHTML = "";
 
-  boardElement.style.gridTemplateColumns = `repeat(${board.size}, 60px)`;
-  boardElement.style.gridTemplateRows = `repeat(${board.size}, 60px)`;
+  const boardSize = Math.min(window.innerWidth * 0.9, 600);
+  const cellSize = Math.floor(boardSize / board.size);
+
+  boardElement.style.gridTemplateColumns = `repeat(${board.size}, ${cellSize}px)`;
+  boardElement.style.gridTemplateRows = `repeat(${board.size}, ${cellSize}px)`;
 
   for (let row = 0; row < board.size; row++) {
     for (let col = 0; col < board.size; col++) {
