@@ -20,43 +20,39 @@ let isDragging = false;
 let secondsElapsed = 0;
 let timerInterval = null;
 
-// Initialize the game
+// Initialize the game - Run ONCE when the page loads
 async function init() {
-  console.log("Queens Puzzle Game - Initializing...");
+  console.log("Queens Puzzle Game - Initializing App...");
 
-  // Initialize theme manager
   themeManager = ThemeManager.getInstance();
   themeManager.initializeUI();
 
-  difficulty = GAME_CONFIG.DIFFICULTY.MEDIUM;
+  setupEventListeners();
 
-  // currentPuzzle = getPuzzle("expert_1");
-  currentPuzzle = PuzzleGenerator.generate(difficulty.boardSize);
-  // currentPuzzle = await getPuzzleById("e_002");
+  console.log("App ready. Waiting for user to select difficulty...");
+}
+
+async function loadPuzzleByDifficulty(difficultyType, size) {
+  console.log(`Loading ${difficultyType} puzzle (Size: ${size})...`);
+
+  currentPuzzle = PuzzleGenerator.generate(size);
 
   if (!currentPuzzle) {
-    console.error("Failed to load puzzle!");
+    console.error("Failed to generate/load puzzle!");
     return;
   }
 
-  console.log("Loaded puzzle:", currentPuzzle.name);
-  console.log("Current Puzzle Data:", JSON.stringify(currentPuzzle));
-
   board = new Board(currentPuzzle.size);
-
   board.setRegions(currentPuzzle.regions);
 
   hintManager = new HintManager(board);
 
   createBoardDOM();
+  updateStats();
+
   startTimer();
 
-  setupEventListeners();
-
-  console.log("Game initialized!");
-  console.log(
-    "Click a cell to place an X mark, then click the X to place a queen."
-  );
+  console.log("Game started!");
 }
 
 // Render the board to the DOM
@@ -170,6 +166,36 @@ function setupEventListeners() {
   document.getElementById("close-victory-btn").addEventListener("click", () => {
     document.getElementById("victory-overlay").classList.add("hidden");
   });
+
+  const menuButtons = document.querySelectorAll(".menu-btn");
+  menuButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const difficulty = btn.dataset.difficulty;
+      startNewGame(difficulty);
+    });
+  });
+
+  document.getElementById("back-to-menu-btn").addEventListener("click", () => {
+    stopTimer(); // Clean up
+    document.getElementById("game-screen").classList.add("hidden");
+    document.getElementById("main-menu").classList.remove("hidden");
+  });
+}
+
+function startNewGame(difficulty) {
+  document.getElementById("main-menu").classList.add("hidden");
+  document.getElementById("game-screen").classList.remove("hidden");
+
+  let size =
+    difficulty === "easy"
+      ? 6
+      : difficulty === "medium"
+      ? 8
+      : difficulty === "hard"
+      ? 10
+      : 12;
+
+  loadPuzzleByDifficulty(difficulty, size);
 }
 
 function handleCellClick(row, col) {
@@ -209,15 +235,15 @@ function updateStats() {
 function resetGame() {
   board.clear();
   updateBoardDisplay();
-  startTimer();
   console.log("Game reset");
 }
 
 document.addEventListener("DOMContentLoaded", init);
 
 document.getElementById("hint-btn").addEventListener("click", () => {
-  const hint = hintManager.getHint();
+  if (!hintManager || !board) return;
 
+  const hint = hintManager.getHint(board);
   if (hint.row !== undefined) {
     const cellDiv = document.querySelector(
       `.cell[data-row="${hint.row}"][data-col="${hint.col}"]`

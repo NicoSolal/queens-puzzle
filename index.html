@@ -22,47 +22,68 @@
         <button class="theme-option" data-theme="cream">Cream</button>
       </div>
 
-      <div id="game-container">
-        <div id="board-container">
-          <div id="game-board"></div>
+      <div id="main-menu" class="screen-container">
+        <div class="menu-card">
+          <h2>Select Difficulty</h2>
+          <div class="menu-options">
+            <button class="menu-btn" data-difficulty="easy">Easy (6x6)</button>
+            <button class="menu-btn" data-difficulty="medium">
+              Medium (8x8)
+            </button>
+            <button class="menu-btn" data-difficulty="hard">
+              Hard (10x10)
+            </button>
+            <button class="menu-btn" data-difficulty="expert">
+              Expert (12x12)
+            </button>
+          </div>
+          <p class="menu-footer">Master the grid, one queen at a time.</p>
+        </div>
+      </div>
+
+      <div id="game-screen" class="screen-container hidden">
+        <div id="game-container">
+          <div id="board-container">
+            <div id="game-board"></div>
+          </div>
+
+          <div id="side-panel">
+            <h2>Game Stats</h2>
+
+            <div class="stat">
+              <span class="stat-label">Queens Placed:</span>
+              <div class="stat-value" id="queens-count">0 / 8</div>
+            </div>
+
+            <div class="stat">
+              <span class="stat-label">Time:</span>
+              <div class="stat-value" id="timer">0:00</div>
+            </div>
+
+            <div class="stat">
+              <span class="stat-label">Score:</span>
+              <div class="stat-value" id="score">0</div>
+            </div>
+
+            <hr />
+
+            <button id="reset-btn">Reset</button>
+            <button id="undo-btn" disabled>Undo</button>
+            <button id="hint-btn">Get Hint</button>
+
+            <hr />
+
+            <h3>How to Play:</h3>
+            <ol class="instructions">
+              <li>Click a cell to mark it (✕)</li>
+              <li>Click a marked cell to place a queen (♛)</li>
+              <li>Queens cannot touch each other (even diagonally)</li>
+              <li>Each row, column, and color must have exactly one queen</li>
+            </ol>
+          </div>
         </div>
 
-        <div id="side-panel">
-          <h2>Game Stats</h2>
-
-          <div class="stat">
-            <span class="stat-label">Queens Placed:</span>
-            <div class="stat-value" id="queens-count">0 / 8</div>
-          </div>
-
-          <div class="stat">
-            <span class="stat-label">Time:</span>
-            <div class="stat-value" id="timer">0:00</div>
-          </div>
-
-          <div class="stat">
-            <span class="stat-label">Score:</span>
-            <div class="stat-value" id="score">0</div>
-          </div>
-
-          <hr />
-
-          <button id="reset-btn">Reset</button>
-          <button id="undo-btn" disabled>Undo</button>
-          <button id="hint-btn">Get Hint</button>
-
-          <hr />
-
-          <h3>How to Play:</h3>
-          <ol class="instructions">
-            <li>Click a cell to mark it</li>
-            <li>Click a marked cell to place a queen</li>
-            <li>Queens cannot touch each other</li>
-            <li>
-              Each row, column, and colored region must have exactly one queen
-            </li>
-          </ol>
-        </div>
+        <button id="back-to-menu-btn" class="secondary">← Back to Menu</button>
       </div>
     </div>
 
@@ -87,7 +108,6 @@
       </div>
     </div>
 
-    <!-- JavaScript Modules -->
     <script type="module" src="js/main.js"></script>
   </body>
 </html>
