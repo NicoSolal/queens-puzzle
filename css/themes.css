@@ -140,7 +140,6 @@ hr {
   color: var(--text-muted);
 }
 
-/* Theme selector styles */
 #theme-selector {
   position: fixed;
   top: 20px;
@@ -148,35 +147,93 @@ hr {
   z-index: 1000;
 }
 
-#theme-btn {
-  position: absolute;
-  left: 50px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+#top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+header h1 {
+  font-size: 1.8rem;
   margin: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  min-width: 100px;
+}
+
+#top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+header h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
+#theme-container {
+  position: relative;
+}
+
+#theme-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  z-index: 100;
 }
 
 #theme-menu {
   position: absolute;
-  top: 70px;
-  left: 50px;
   background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   display: none;
   flex-direction: column;
   gap: 6px;
-  min-width: 140px;
-  border: 1px solid var(--border-color);
+  min-width: 150px;
+  z-index: 1000;
 }
 
 #theme-menu.show {
   display: flex;
+}
+
+@media (max-width: 480px) {
+  #top-bar {
+    padding: 10px 10px;
+  }
+
+  header h1 {
+    font-size: 1.2rem;
+  }
+
+  header p {
+    display: none;
+  }
+
+  #theme-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  #theme-menu {
+    min-width: 120px;
+    top: 40px;
+  }
+
+  .theme-option {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
 }
 
 .theme-option {
@@ -207,18 +264,4 @@ hr {
 
 .theme-option.active:hover {
   background-color: var(--accent-secondary);
-}
-
-/* Mobile: move it to the center flow when screen is narrow */
-@media (max-width: 768px) {
-  #theme-btn {
-    position: relative;
-    top: 0;
-    right: 0;
-    margin: 10px auto;
-  }
-
-  #theme-menu {
-    top: 45px;
-  }
 }
