@@ -5,8 +5,8 @@ export class HintManager {
     this.board = board;
     this.strategies = [
       new SingleRemainingSpotStrategy(),
-      new OnlyOnePossibleQueenInRegionStrategy(),
-      // We can add more complex ones later (e.g., Hidden Singles)
+      new SingleRemainingRowSpot(),
+      new SingleRemainingColumnSpot(),
     ];
   }
 
@@ -19,14 +19,8 @@ export class HintManager {
   }
 }
 
-/**
- * STRATEGY 1: The "Lone Survivor" in a Region
- * Logic: If a region has only one cell that is NOT marked (X),
- * and no queen is in that region yet, that cell MUST be a queen.
- */
 class SingleRemainingSpotStrategy {
   execute(board) {
-    // Group cells by region
     const regionMap = {};
     for (let r = 0; r < board.size; r++) {
       for (let c = 0; c < board.size; c++) {
@@ -39,10 +33,8 @@ class SingleRemainingSpotStrategy {
     for (const regionId in regionMap) {
       const cells = regionMap[regionId];
 
-      // Skip if region already has a queen
       if (cells.some((c) => c.hasQueen())) continue;
 
-      // Find cells that are NOT marked and NOT queens (potential spots)
       const potentialSpots = cells.filter((c) => c.isEmpty());
 
       if (potentialSpots.length === 1) {
@@ -59,16 +51,66 @@ class SingleRemainingSpotStrategy {
   }
 }
 
-/**
- * STRATEGY 2: Only One Valid Spot (Check against other queens)
- * Logic: Even if there are multiple empty spots, if only one doesn't
- * violate 'canPlaceQueen', then that's the one.
- */
-class OnlyOnePossibleQueenInRegionStrategy {
+class SingleRemainingRowSpot {
   execute(board) {
-    // Similar to above, but use board.canPlaceQueen(r, c)
-    // to filter the empty cells.
-    // ... logic for filtering ...
-    return null; // Placeholder
+    const rowMap = {};
+    for (let r = 0; r < board.size; r++) {
+      for (let c = 0; c < board.size; c++) {
+        const cell = board.getCell(r, c);
+        if (!rowMap[r]) rowMap[r] = [];
+        rowMap[r].push(cell);
+      }
+    }
+
+    for (const row in rowMap) {
+      const cells = rowMap[row];
+
+      if (cells.some((c) => c.hasQueen())) continue;
+
+      const potentialSpots = cells.filter((c) => c.isEmpty());
+
+      if (potentialSpots.length === 1) {
+        const spot = potentialSpots[0];
+        return {
+          row: spot.row,
+          col: spot.col,
+          type: "MUST_BE_QUEEN",
+          message: "This is the only possible spot left in its row!",
+        };
+      }
+    }
+    return null;
+  }
+}
+
+class SingleRemainingColumnSpot {
+  execute(board) {
+    const rowMap = {};
+    for (let c = 0; c < board.size; c++) {
+      for (let r = 0; r < board.size; r++) {
+        const cell = board.getCell(r, c);
+        if (!rowMap[c]) rowMap[c] = [];
+        rowMap[c].push(cell);
+      }
+    }
+
+    for (const col in rowMap) {
+      const cells = rowMap[col];
+
+      if (cells.some((c) => c.hasQueen())) continue;
+
+      const potentialSpots = cells.filter((c) => c.isEmpty());
+
+      if (potentialSpots.length === 1) {
+        const spot = potentialSpots[0];
+        return {
+          row: spot.row,
+          col: spot.col,
+          type: "MUST_BE_QUEEN",
+          message: "This is the only possible spot left in its column!",
+        };
+      }
+    }
+    return null;
   }
 }

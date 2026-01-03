@@ -12,9 +12,11 @@ let board = null;
 let gameStarted = false;
 let themeManager = null;
 let currentPuzzle = null;
+let currentPuzzleNumber = null;
 let difficulty = null;
 let hintManager = null;
 let isDragging = false;
+let score = 0;
 
 // Timer
 let secondsElapsed = 0;
@@ -169,44 +171,129 @@ function setupEventListeners() {
 
   document.getElementById("reset-btn").addEventListener("click", resetGame);
 
-  document.getElementById("play-again-btn").addEventListener("click", () => {
-    document.getElementById("victory-overlay").classList.add("hidden");
-    resetGame();
-  });
+  document
+    .getElementById("play-next-btn")
+    .addEventListener("click", async () => {
+      document.getElementById("victory-overlay").classList.add("hidden");
+
+      currentPuzzleNumber++;
+
+      const prefix =
+        difficulty === "easy"
+          ? "e_"
+          : difficulty === "medium"
+          ? "m_"
+          : difficulty === "hard"
+          ? "h_"
+          : "x_";
+
+      const paddedNum = currentPuzzleNumber.toString().padStart(3, "0");
+      const puzzleId = `${prefix}${paddedNum}`;
+
+      const success = await loadSpecificPuzzle(puzzleId);
+
+      if (success === null) {
+        currentPuzzleNumber--; // Revert the increment
+        document.getElementById("game-screen").classList.add("hidden");
+        document.getElementById("main-menu").classList.remove("hidden");
+      }
+    });
 
   document.getElementById("close-victory-btn").addEventListener("click", () => {
     document.getElementById("victory-overlay").classList.add("hidden");
   });
 
+  document.getElementById("back-to-menu-btn").addEventListener("click", () => {
+    stopTimer();
+    document.getElementById("game-screen").classList.add("hidden");
+    document.getElementById("main-menu").classList.remove("hidden");
+  });
+
   const menuButtons = document.querySelectorAll(".menu-btn");
   menuButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const difficulty = btn.dataset.difficulty;
-      startNewGame(difficulty);
+      const diff = btn.dataset.difficulty;
+      showLevelSelection(diff);
     });
   });
 
-  document.getElementById("back-to-menu-btn").addEventListener("click", () => {
-    stopTimer(); // Clean up
-    document.getElementById("game-screen").classList.add("hidden");
+  document.getElementById("back-to-main-btn").addEventListener("click", () => {
+    document.getElementById("level-selection").classList.add("hidden");
     document.getElementById("main-menu").classList.remove("hidden");
   });
 }
 
-function startNewGame(difficulty) {
-  document.getElementById("main-menu").classList.add("hidden");
+async function showLevelSelection(diff) {
+  const mainMenu = document.getElementById("main-menu");
+  const levelSelection = document.getElementById("level-selection");
+  const levelGrid = document.getElementById("level-grid");
+  const selectionTitle = document.getElementById("selection-title");
+
+  mainMenu.classList.add("hidden");
+  levelSelection.classList.remove("hidden");
+
+  selectionTitle.textContent = `${
+    diff.charAt(0).toUpperCase() + diff.slice(1)
+  } Levels`;
+  levelGrid.innerHTML = "";
+
+  const response = await fetch("./js/data/puzzles.json");
+  const data = await response.json();
+  const puzzlesInDiff = data[diff] || [];
+
+  difficulty = diff;
+
+  puzzlesInDiff.forEach((puzzle, index) => {
+    const btn = document.createElement("button");
+    btn.className = "level-item-btn";
+    btn.textContent = index + 1;
+
+    btn.addEventListener("click", () => {
+      const prefix =
+        diff === "easy"
+          ? "e_"
+          : diff === "medium"
+          ? "m_"
+          : diff === "hard"
+          ? "h_"
+          : "x_";
+      currentPuzzleNumber = index + 1;
+      const paddedNum = (index + 1).toString().padStart(3, "0");
+      const puzzleId = `${prefix}${paddedNum}`;
+
+      loadSpecificPuzzle(puzzleId);
+    });
+
+    levelGrid.appendChild(btn);
+  });
+}
+
+async function loadSpecificPuzzle(puzzleId) {
+  console.log(`Attempting to load: ${puzzleId}`);
+
+  document.getElementById("level-selection").classList.add("hidden");
   document.getElementById("game-screen").classList.remove("hidden");
+  document
+    .getElementById("side-panel")
+    .querySelector("h2").textContent = `Puzzle ${currentPuzzleNumber}`;
 
-  let size =
-    difficulty === "easy"
-      ? 6
-      : difficulty === "medium"
-      ? 8
-      : difficulty === "hard"
-      ? 10
-      : 12;
+  currentPuzzle = await getPuzzleById(puzzleId);
 
-  loadPuzzleByDifficulty(difficulty, size);
+  if (currentPuzzle) {
+    board = new Board(currentPuzzle.size);
+    board.setRegions(currentPuzzle.regions);
+
+    hintManager = new HintManager(board);
+    createBoardDOM();
+    updateStats();
+    startTimer();
+  } else {
+    console.error("Puzzle ID not found in JSON!");
+    alert("Error loading puzzle.");
+    return null;
+  }
+
+  score = 5000;
 }
 
 function handleCellClick(row, col) {
@@ -229,9 +316,24 @@ function showVictoryScreen() {
   const overlay = document.getElementById("victory-overlay");
   const finalTime = document.getElementById("timer").textContent;
 
-  const score = Math.max(0, 4000 - secondsElapsed * 3);
-
   document.getElementById("final-time").textContent = finalTime;
+
+  if (secondsElapsed < 60) {
+    score += 1000;
+    document.getElementById("victory-bonus").textContent =
+      "1000 Speed bonus points";
+  } else if (secondsElapsed < 120) {
+    score += 500;
+    document.getElementById("victory-bonus").textContent =
+      "500 Speed bonus points";
+  } else if (secondsElapsed < 180) {
+    score += 200;
+    document.getElementById("victory-bonus").textContent =
+      "200 Speed bonus points";
+  } else {
+    document.getElementById("victory-bonus").textContent = "No bonus points";
+  }
+
   document.getElementById("final-score").textContent = score;
 
   overlay.classList.remove("hidden");
@@ -265,7 +367,7 @@ document.getElementById("hint-btn").addEventListener("click", () => {
 
     setTimeout(() => cellDiv.classList.remove("hint-highlight"), 2000);
   } else {
-    alert(hint.message);
+    console.log(hint.message);
   }
 });
 
@@ -288,9 +390,11 @@ function stopTimer() {
 }
 
 function updateTimerDisplay() {
+  score -= 4;
   const minutes = Math.floor(secondsElapsed / 60);
   const seconds = secondsElapsed % 60;
 
   const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
   document.getElementById("timer").textContent = formattedTime;
+  document.getElementById("score").textContent = score;
 }
