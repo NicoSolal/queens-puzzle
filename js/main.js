@@ -16,11 +16,12 @@ let currentPuzzleNumber = null;
 let difficulty = null;
 let hintManager = null;
 let isDragging = false;
-let score = 0;
 
-// Timer
+// Game stats
+let score = 0;
 let secondsElapsed = 0;
 let timerInterval = null;
+let hasWon = null;
 
 // Initialize the game - Run ONCE when the page loads
 async function init() {
@@ -283,8 +284,11 @@ async function loadSpecificPuzzle(puzzleId) {
     board = new Board(currentPuzzle.size);
     board.setRegions(currentPuzzle.regions);
 
+    hasWon = false;
+
     hintManager = new HintManager(board);
     createBoardDOM();
+    score = GAME_CONFIG.INITIAL_SCORE;
     updateStats();
     startTimer();
   } else {
@@ -292,8 +296,6 @@ async function loadSpecificPuzzle(puzzleId) {
     alert("Error loading puzzle.");
     return null;
   }
-
-  score = 5000;
 }
 
 function handleCellClick(row, col) {
@@ -318,22 +320,28 @@ function showVictoryScreen() {
 
   document.getElementById("final-time").textContent = finalTime;
 
-  if (secondsElapsed < 60) {
-    score += 1000;
-    document.getElementById("victory-bonus").textContent =
-      "1000 Speed bonus points";
-  } else if (secondsElapsed < 120) {
-    score += 500;
-    document.getElementById("victory-bonus").textContent =
-      "500 Speed bonus points";
-  } else if (secondsElapsed < 180) {
-    score += 200;
-    document.getElementById("victory-bonus").textContent =
-      "200 Speed bonus points";
-  } else {
-    document.getElementById("victory-bonus").textContent = "No bonus points";
+  if (!hasWon) {
+    if (secondsElapsed < 60) {
+      score += 1000;
+      document.getElementById("victory-bonus").textContent =
+        "1000 Speed bonus points";
+    } else if (secondsElapsed < 120) {
+      score += 500;
+      document.getElementById("victory-bonus").textContent =
+        "500 Speed bonus points";
+    } else if (secondsElapsed < 180) {
+      score += 200;
+      document.getElementById("victory-bonus").textContent =
+        "200 Speed bonus points";
+    } else {
+      document.getElementById("victory-bonus").textContent = "No bonus points";
+    }
   }
 
+  hasWon = true;
+
+  // update scores
+  document.getElementById("score").textContent = score;
   document.getElementById("final-score").textContent = score;
 
   overlay.classList.remove("hidden");

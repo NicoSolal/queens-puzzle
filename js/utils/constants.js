@@ -12,6 +12,9 @@ export const GAME_CONFIG = {
     QUEEN: "queen", // Queen placed
   },
 
+  // Initial score
+  INITIAL_SCORE: 5000,
+
   // Difficulty levels
   DIFFICULTY: {
     EASY: {

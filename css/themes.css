@@ -208,3 +208,17 @@ hr {
 .theme-option.active:hover {
   background-color: var(--accent-secondary);
 }
+
+/* Mobile: move it to the center flow when screen is narrow */
+@media (max-width: 768px) {
+  #theme-btn {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 10px auto;
+  }
+
+  #theme-menu {
+    top: 45px;
+  }
+}
