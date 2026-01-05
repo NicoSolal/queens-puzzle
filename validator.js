@@ -115,7 +115,7 @@ const startValidationProcess = async () => {
   // const config = [{ difficulty: "easy", size: 6, count: 10, prefix: "e_" }];
   // const config = [{ difficulty: "medium", size: 8, count: 10, prefix: "m_" }];
   // const config = [{ difficulty: "hard", size: 10, count: 10, prefix: "h_" }];
-  const config = [{ difficulty: "expert", size: 12, count: 1, prefix: "x_" }];
+  const config = [{ difficulty: "expert", size: 12, count: 5, prefix: "x_" }];
 
   for (const item of config) {
     console.log(

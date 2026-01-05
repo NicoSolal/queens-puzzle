@@ -12,22 +12,27 @@
   </head>
   <body>
     <div id="app">
-      <div id="top-bar">
-        <header>
-          <h1>Queens ♛</h1>
-          <p>Place queens so no two queens touch each other</p>
-        </header>
+      <header>
+        <h1>Queens ♛</h1>
+        <p>Place queens so no two queens touch each other</p>
+      </header>
 
-        <div id="theme-container">
-          <button id="theme-btn" title="Change Theme">Themes Selection</button>
-          <div id="theme-menu">
-            <button class="theme-option" data-theme="default">Blue/Gray</button>
-            <button class="theme-option" data-theme="dark">Dark</button>
-            <button class="theme-option" data-theme="light">Light</button>
-            <button class="theme-option" data-theme="cream">Cream</button>
-          </div>
-        </div>
+      <button id="theme-btn" title="Change Theme">Themes Selection</button>
+      <div id="theme-menu">
+        <button class="theme-option" data-theme="default" data-id="default">
+          Blue/Gray
+        </button>
+        <button class="theme-option" data-theme="default" data-id="dark">
+          Dark
+        </button>
+        <button class="theme-option" data-theme="default" data-id="light">
+          Light
+        </button>
+        <button class="theme-option" data-theme="default" data-id="cream">
+          Cream
+        </button>
       </div>
+
       <div id="main-menu" class="screen-container">
         <div class="menu-card">
           <h2>Select Difficulty</h2>

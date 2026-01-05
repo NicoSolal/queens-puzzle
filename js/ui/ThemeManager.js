@@ -38,10 +38,8 @@ export class ThemeManager {
       return;
     }
 
-    // Remove all theme data attributes
     document.documentElement.removeAttribute("data-theme");
 
-    // Apply new theme (default doesn't need data attribute)
     if (themeName !== "default") {
       document.documentElement.setAttribute("data-theme", themeName);
     }
@@ -49,7 +47,6 @@ export class ThemeManager {
     this.currentTheme = themeName;
     this.saveTheme();
 
-    // Update UI to reflect current theme
     this.updateThemeUI();
   }
 
@@ -108,7 +105,7 @@ export class ThemeManager {
     const themeOptions = document.querySelectorAll(".theme-option");
     themeOptions.forEach((option) => {
       option.addEventListener("click", () => {
-        const theme = option.dataset.theme;
+        const theme = option.dataset.id;
         this.applyTheme(theme);
         themeMenu.classList.remove("show");
       });
