@@ -25,23 +25,6 @@ body {
   padding: 20px;
 }
 
-/* Header */
-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-header h1 {
-  font-size: 48px;
-  color: #00d9ff;
-  margin-bottom: 10px;
-}
-
-header p {
-  font-size: 18px;
-  color: #ccc;
-}
-
 /* Game container */
 #game-container {
   display: flex;
@@ -112,6 +95,96 @@ header p {
   background-color: rgba(241, 196, 15, 0.3) !important;
   transform: scale(1.1);
   z-index: 10;
+}
+
+/* Top bar */
+/* --- Top Bar Navigation --- */
+#top-bar {
+  position: relative; /* Essential for the absolute positioning of the theme group */
+  display: flex;
+  justify-content: center; /* This puts the header in the EXACT middle */
+  align-items: center;
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 20px;
+}
+
+#theme-container {
+  position: absolute;
+  left: 20px; /* Pinned to the top left */
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  margin-bottom: 0; /* Remove old margin to keep top bar thin */
+}
+
+header h1 {
+  font-size: 40px; /* Slightly smaller than your original 48px for better fit */
+  margin: 0;
+  transition: font-size 0.3s ease;
+}
+
+#tagline {
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+#theme-btn {
+  margin: 0;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+/* Fix the menu to appear relative to the group */
+#theme-menu {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  background-color: #16213e; /* Match your bg-secondary */
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 8px;
+  z-index: 1000;
+  display: none; /* Controlled by .show or JS */
+  flex-direction: column;
+  gap: 5px;
+}
+
+#theme-menu.show {
+  display: flex;
+}
+
+/* --- MOBILE RESPONSIVE FIXES --- */
+@media (max-width: 480px) {
+  #top-bar {
+    min-height: 60px;
+    padding: 5px 10px;
+  }
+
+  #theme-container {
+    left: 10px;
+  }
+
+  header h1 {
+    font-size: 24px; /* Title shrinks significantly to stay centered */
+  }
+
+  #tagline {
+    display: none; /* Hide tagline on tiny screens to save height */
+  }
+
+  #theme-btn {
+    padding: 5px 10px;
+    font-size: 11px; /* Smaller button */
+  }
+
+  #theme-menu {
+    min-width: 120px;
+  }
 }
 
 /* Side panel */
@@ -193,24 +266,6 @@ button:disabled {
   background-color: #555;
   cursor: not-allowed;
   transform: none;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  #game-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  header h1 {
-    font-size: 36px;
-  }
-
-  .cell {
-    width: 50px;
-    height: 50px;
-    font-size: 28px;
-  }
 }
 
 .overlay {
@@ -366,10 +421,6 @@ button.secondary {
     flex-direction: column; /* Mobile: Stacked vertically */
     align-items: center;
     gap: 15px;
-  }
-
-  header h1 {
-    font-size: 32px; /* Smaller title for phones */
   }
 
   .menu-card {

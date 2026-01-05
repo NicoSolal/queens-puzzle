@@ -12,41 +12,38 @@
   </head>
   <body>
     <div id="app">
-      <header>
-        <h1>Queens ♛</h1>
-        <p>Place queens so no two queens touch each other</p>
-      </header>
-
-      <button id="theme-btn" title="Change Theme">Themes Selection</button>
-      <div id="theme-menu">
-        <button class="theme-option" data-theme="default" data-id="default">
-          Blue/Gray
-        </button>
-        <button class="theme-option" data-theme="default" data-id="dark">
-          Dark
-        </button>
-        <button class="theme-option" data-theme="default" data-id="light">
-          Light
-        </button>
-        <button class="theme-option" data-theme="default" data-id="cream">
-          Cream
-        </button>
+      <div id="top-bar">
+        <div id="theme-container">
+          <button id="theme-btn" title="Change Theme">Themes Selection</button>
+          <div id="theme-menu">
+            <button class="theme-option" data-theme="default" data-id="default">
+              Blue/Gray
+            </button>
+            <button class="theme-option" data-theme="default" data-id="dark">
+              Dark
+            </button>
+            <button class="theme-option" data-theme="default" data-id="light">
+              Light
+            </button>
+            <button class="theme-option" data-theme="default" data-id="cream">
+              Cream
+            </button>
+          </div>
+        </div>
+        <header>
+          <h1>Queens ♛</h1>
+          <p>Place queens so no two queens touch each other</p>
+        </header>
       </div>
 
       <div id="main-menu" class="screen-container">
         <div class="menu-card">
           <h2>Select Difficulty</h2>
           <div class="menu-options">
-            <button class="menu-btn" data-difficulty="easy">Easy (6x6)</button>
-            <button class="menu-btn" data-difficulty="medium">
-              Medium (8x8)
-            </button>
-            <button class="menu-btn" data-difficulty="hard">
-              Hard (10x10)
-            </button>
-            <button class="menu-btn" data-difficulty="expert">
-              Expert (12x12)
-            </button>
+            <button class="menu-btn" data-difficulty="easy">Easy</button>
+            <button class="menu-btn" data-difficulty="medium">Medium</button>
+            <button class="menu-btn" data-difficulty="hard">Hard</button>
+            <button class="menu-btn" data-difficulty="expert">Expert</button>
           </div>
         </div>
       </div>
