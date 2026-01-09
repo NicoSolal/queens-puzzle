@@ -13,26 +13,42 @@
   <body>
     <div id="app">
       <div id="top-bar">
-        <div id="theme-container">
-          <button id="theme-btn" title="Change Theme">Themes Selection</button>
-          <div id="theme-menu">
-            <button class="theme-option" data-theme="default" data-id="default">
-              Blue/Gray
-            </button>
-            <button class="theme-option" data-theme="default" data-id="dark">
-              Dark
-            </button>
-            <button class="theme-option" data-theme="default" data-id="light">
-              Light
-            </button>
-            <button class="theme-option" data-theme="default" data-id="cream">
-              Cream
-            </button>
+        <div id="options-container">
+          <button id="main-options-btn" title="Game Options"></button>
+          <div id="options-menu" class="hidden">
+            <div class="setting-row">
+              <span class="setting-label">Sound</span>
+              <button class="toggle-btn" id="toggle-sound" data-state="on">
+                On
+              </button>
+            </div>
+
+            <div class="setting-row">
+              <span class="setting-label">Music</span>
+              <button class="toggle-btn" id="toggle-music" data-state="on">
+                On
+              </button>
+            </div>
+
+            <hr class="menu-divider" />
+
+            <div id="theme-selection-wrapper">
+              <button id="theme-sub-btn">Themes Selection</button>
+              <div id="theme-menu" class="hidden">
+                <button class="theme-option" data-id="default">
+                  Blue/Gray
+                </button>
+                <button class="theme-option" data-id="dark">Dark</button>
+                <button class="theme-option" data-id="light">Light</button>
+                <button class="theme-option" data-id="cream">Cream</button>
+              </div>
+            </div>
           </div>
         </div>
+
         <header>
           <h1>Queens ♛</h1>
-          <p>Place queens so no two queens touch each other</p>
+          <p id="tagline">No two queens touch each other</p>
         </header>
       </div>
 

@@ -154,6 +154,14 @@ header h1 {
   gap: 5px;
 }
 
+@media (max-width: 12000px) {
+  #main-options-btn::before {
+    content: "☰";
+    font-size: 18px;
+    font-weight: bold;
+  }
+}
+
 #theme-menu.show {
   display: flex;
 }
@@ -170,16 +178,34 @@ header h1 {
   }
 
   header h1 {
-    font-size: 24px; /* Title shrinks significantly to stay centered */
+    font-size: 24px;
+  }
+
+  #main-options-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+
+  #main-options-btn::before {
+    content: "⋮";
+    font-size: 18px;
+    font-weight: bold;
   }
 
   #tagline {
-    display: none; /* Hide tagline on tiny screens to save height */
+    display: none;
   }
 
   #theme-btn {
     padding: 5px 10px;
-    font-size: 11px; /* Smaller button */
+    font-size: 11px;
   }
 
   #theme-menu {
@@ -465,9 +491,179 @@ button.secondary {
   transform: scale(1.1);
 }
 
-/* Adjust for smaller screens */
 @media (max-width: 480px) {
   .level-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* --- Updated Structural Layout --- */
+#top-bar {
+  position: relative;
+  display: flex;
+  justify-content: center; /* This centers the title in the exact middle */
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  min-height: 90px;
+}
+
+#options-btn {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+
+header {
+  text-align: center;
+  margin: 0; /* Remove margins that push the title off-center */
+}
+
+header h1 {
+  font-size: 42px; /* Desktop size */
+  color: var(--accent-primary);
+  margin: 0;
+  line-height: 1;
+}
+
+#theme-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Container pinned to top-left */
+#options-container {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2000;
+}
+
+/* The Main Window (☰ Menu) */
+#options-menu {
+  position: absolute;
+  top: 110%; /* Just below the ☰ button */
+  left: 0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Nested Theme Menu */
+#theme-selection-wrapper {
+  position: relative;
+}
+
+#theme-menu {
+  position: absolute;
+  left: 105%; /* Pops out to the RIGHT of the options menu */
+  top: 0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+/* Mobile specific: Stack them instead of fly-out */
+@media (max-width: 480px) {
+  #theme-menu {
+    position: relative; /* Stacks inside the main menu */
+    left: 0;
+    top: 5px;
+    box-shadow: none;
+    background-color: var(--bg-primary);
+  }
+
+  header h1 {
+    font-size: 22px;
+  }
+}
+
+/* Helper Classes */
+.menu-divider {
+  border-top: 1px solid var(--border-color);
+  margin: 5px 0;
+}
+.hidden {
+  display: none !important;
+}
+
+.theme-option {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  background-color: var(--accent-primary);
+}
+
+.options-option {
+  width: 100%;
+  padding: 10px;
+  margin: 2px 0;
+  text-align: left;
+  background-color: var(--bg-cell);
+  border: 1px solid var(--border-color);
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.options-option:hover {
+  background-color: var(--bg-cell-hover);
+}
+
+/* Add a visual indicator for "On" states */
+.options-option[data-sound="on"],
+.options-option[data-music="on"] {
+  border-left: 4px solid var(--accent-primary);
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between; /* Label left, Button right */
+  align-items: center;
+  padding: 8px 5px;
+  gap: 15px; /* Minimum space between text and button */
+}
+
+.setting-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.toggle-btn {
+  min-width: 60px;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  background-color: var(--bg-cell);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  margin: 0;
+}
+
+.toggle-btn[data-state="off"] {
+  background-color: var(--bg-primary);
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.setting-label {
+  font-size: 18px;
 }

@@ -85,7 +85,7 @@ export class ThemeManager {
 
   // Initialize theme selector UI
   initializeUI() {
-    const themeBtn = document.getElementById("theme-btn");
+    const themeBtn = document.getElementById("theme-sub-btn");
     const themeMenu = document.getElementById("theme-menu");
 
     // Toggle menu on button click

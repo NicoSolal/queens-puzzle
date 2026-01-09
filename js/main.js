@@ -35,29 +35,6 @@ async function init() {
   console.log("App ready. Waiting for user to select difficulty...");
 }
 
-async function loadPuzzleByDifficulty(difficultyType, size) {
-  console.log(`Loading ${difficultyType} puzzle (Size: ${size})...`);
-
-  currentPuzzle = PuzzleGenerator.generate(size);
-
-  if (!currentPuzzle) {
-    console.error("Failed to generate/load puzzle!");
-    return;
-  }
-
-  board = new Board(currentPuzzle.size);
-  board.setRegions(currentPuzzle.regions);
-
-  hintManager = new HintManager(board);
-
-  createBoardDOM();
-  updateStats();
-
-  startTimer();
-
-  console.log("Game started!");
-}
-
 // Render the board to the DOM
 function createBoardDOM() {
   const boardElement = document.getElementById("game-board");
@@ -134,6 +111,49 @@ function updateCellDisplay(cellDiv, cell) {
 }
 
 function setupEventListeners() {
+  const optionsBtn = document.getElementById("main-options-btn");
+  const optionsMenu = document.getElementById("options-menu");
+  const themeSubBtn = document.getElementById("theme-sub-btn");
+  const themeMenu = document.getElementById("theme-menu");
+
+  optionsBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevents the document listener from closing it immediately
+    optionsMenu.classList.toggle("hidden");
+  });
+
+  optionsMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  themeSubBtn.addEventListener("click", (e) => {
+    themeMenu.classList.toggle("hidden");
+  });
+
+  document.addEventListener("click", (e) => {
+    optionsMenu.classList.add("hidden");
+    themeMenu.classList.add("hidden");
+  });
+
+  const setupToggle = (buttonId) => {
+    const btn = document.getElementById(buttonId);
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      const currentState = btn.dataset.state;
+      const newState = currentState === "on" ? "off" : "on";
+
+      btn.dataset.state = newState;
+
+      btn.textContent = newState.charAt(0).toUpperCase() + newState.slice(1);
+
+      console.log(`${buttonId} is now ${newState}`);
+    });
+  };
+
+  setupToggle("toggle-sound");
+  setupToggle("toggle-music");
+
   const boardElement = document.getElementById("game-board");
 
   boardElement.addEventListener("mousedown", (e) => {
