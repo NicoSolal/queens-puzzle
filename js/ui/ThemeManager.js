@@ -83,35 +83,17 @@ export class ThemeManager {
     });
   }
 
-  // Initialize theme selector UI
   initializeUI() {
-    const themeBtn = document.getElementById("theme-sub-btn");
-    const themeMenu = document.getElementById("theme-menu");
-
-    // Toggle menu on button click
-    themeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      themeMenu.classList.toggle("show");
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!themeMenu.contains(e.target) && e.target !== themeBtn) {
-        themeMenu.classList.remove("show");
-      }
-    });
-
-    // Theme option clicks
     const themeOptions = document.querySelectorAll(".theme-option");
+
     themeOptions.forEach((option) => {
-      option.addEventListener("click", () => {
-        const theme = option.dataset.id;
-        this.applyTheme(theme);
-        themeMenu.classList.remove("show");
+      option.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const themeId = option.dataset.id;
+        this.applyTheme(themeId);
       });
     });
 
-    // Set initial active state
     this.updateThemeUI();
   }
 }

@@ -112,41 +112,29 @@ function updateCellDisplay(cellDiv, cell) {
 
 function setupEventListeners() {
   const optionsBtn = document.getElementById("main-options-btn");
-  const optionsMenu = document.getElementById("options-menu");
-  const themeSubBtn = document.getElementById("theme-sub-btn");
-  const themeMenu = document.getElementById("theme-menu");
+  const optionsOverlay = document.getElementById("options-overlay");
+  const closeOptionsBtn = document.getElementById("close-options-btn");
 
   optionsBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevents the document listener from closing it immediately
-    optionsMenu.classList.toggle("hidden");
-  });
-
-  optionsMenu.addEventListener("click", (e) => {
     e.stopPropagation();
+    optionsOverlay.classList.remove("hidden");
+    stopTimer();
   });
 
-  themeSubBtn.addEventListener("click", (e) => {
-    themeMenu.classList.toggle("hidden");
-  });
-
-  document.addEventListener("click", (e) => {
-    optionsMenu.classList.add("hidden");
-    themeMenu.classList.add("hidden");
+  closeOptionsBtn.addEventListener("click", () => {
+    optionsOverlay.classList.add("hidden");
+    if (gameStarted && !hasWon) startTimer();
   });
 
   const setupToggle = (buttonId) => {
     const btn = document.getElementById(buttonId);
+    if (!btn) return;
 
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-
       const currentState = btn.dataset.state;
       const newState = currentState === "on" ? "off" : "on";
-
       btn.dataset.state = newState;
-
-      btn.textContent = newState.charAt(0).toUpperCase() + newState.slice(1);
-
       console.log(`${buttonId} is now ${newState}`);
     });
   };
@@ -211,10 +199,13 @@ function setupEventListeners() {
       const paddedNum = currentPuzzleNumber.toString().padStart(3, "0");
       const puzzleId = `${prefix}${paddedNum}`;
 
+      if (success === null)
+        document.getElementById("play-next-btn").dissable = true;
+
       const success = await loadSpecificPuzzle(puzzleId);
 
       if (success === null) {
-        currentPuzzleNumber--; // Revert the increment
+        currentPuzzleNumber--;
         document.getElementById("game-screen").classList.add("hidden");
         document.getElementById("main-menu").classList.remove("hidden");
       }
