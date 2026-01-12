@@ -49,25 +49,24 @@ export class Board {
   // Check if a queen can be placed at this position
   canPlaceQueen(row, col) {
     const cell = this.getCell(row, col);
+    const regionId = cell ? cell.regionId : null;
+
     if (!cell || (!cell.isEmpty() && !cell.isMarked())) {
       return false;
     }
 
-    // Check row - no other queens
     for (let c = 0; c < this.size; c++) {
       if (c !== col && this.getCell(row, c)?.hasQueen()) {
         return false;
       }
     }
 
-    // Check column - no other queens
     for (let r = 0; r < this.size; r++) {
       if (r !== row && this.getCell(r, col)?.hasQueen()) {
         return false;
       }
     }
 
-    // Check adjacent cells (1 spot radius including diagonals)
     const adjacentPositions = getAdjacentPositions(row, col);
     for (const pos of adjacentPositions) {
       if (
@@ -76,6 +75,15 @@ export class Board {
       ) {
         const adjacentCell = this.getCell(pos.row, pos.col);
         if (adjacentCell?.hasQueen()) {
+          return false;
+        }
+      }
+    }
+
+    for (let r = 0; r < this.size; r++) {
+      for (let c = 0; c < this.size; c++) {
+        const checkCell = this.getCell(r, c);
+        if (checkCell.regionId === regionId && checkCell.hasQueen()) {
           return false;
         }
       }

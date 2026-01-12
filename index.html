@@ -93,36 +93,32 @@
           <div id="side-panel">
             <h2>Game Stats</h2>
 
-            <div class="stat">
-              <span class="stat-label">Queens Placed:</span>
-              <div class="stat-value" id="queens-count">0 / 8</div>
-            </div>
+            <div class="stats-container">
+              <div class="stat">
+                <span class="stat-label">Queens Placed:</span>
+                <div class="stat-value" id="queens-count">0 / 8</div>
+              </div>
 
-            <div class="stat">
-              <span class="stat-label">Time:</span>
-              <div class="stat-value" id="timer">0:00</div>
-            </div>
+              <div class="stat">
+                <span class="stat-label">Time:</span>
+                <div class="stat-value" id="timer">0:00</div>
+              </div>
 
-            <div class="stat">
-              <span class="stat-label">Score:</span>
-              <div class="stat-value" id="score">0</div>
+              <div class="stat">
+                <span class="stat-label">Score:</span>
+                <div class="stat-value" id="score">0</div>
+              </div>
             </div>
 
             <hr />
 
-            <button id="reset-btn">Reset</button>
-            <button id="undo-btn" disabled>Undo</button>
-            <button id="hint-btn">Get Hint</button>
+            <div class="controls-container">
+              <button id="reset-btn"></button>
+              <button id="undo-btn" disabled></button>
+              <button id="hint-btn"></button>
+            </div>
 
             <hr />
-
-            <h3>How to Play:</h3>
-            <ol class="instructions">
-              <li>Click a cell to mark it (✕)</li>
-              <li>Click a marked cell to place a queen (♛)</li>
-              <li>Queens cannot touch each other (even diagonally)</li>
-              <li>Each row, column, and color must have exactly one queen</li>
-            </ol>
           </div>
         </div>
 

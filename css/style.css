@@ -159,6 +159,18 @@ header h1 {
     font-size: 18px;
     font-weight: bold;
   }
+
+  #reset-btn::before {
+    content: "Reset";
+  }
+
+  #undo-btn::before {
+    content: "Undo";
+  }
+
+  #hint-btn::before {
+    content: "Hint";
+  }
 }
 
 #theme-menu.show {
@@ -443,29 +455,130 @@ button.secondary {
 
 @media (max-width: 768px) {
   #game-container {
-    flex-direction: column; /* Mobile: Stacked vertically */
+    flex-direction: column;
     align-items: center;
     gap: 15px;
   }
 
   .menu-card {
-    width: 95%; /* Menu takes up more screen space on mobile */
+    width: 95%;
     padding: 20px;
   }
 
   .menu-btn {
-    width: 100%; /* Buttons fill the menu width */
+    width: 100%;
+  }
+
+  #side-panel {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  #side-panel h2,
+  #side-panel h3,
+  #side-panel hr,
+  .instructions {
+    display: none !important;
+  }
+
+  .stat {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 15px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  #side-panel {
+    display: grid !important;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 10px !important;
+    width: 100%;
+    margin-top: 10px;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .stat {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  #side-panel button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+  }
+
+  #side-panel h2,
+  #side-panel h3,
+  #side-panel hr,
+  .instructions {
+    display: none !important;
+  }
+
+  #reset-btn::before {
+    content: "↺";
+  }
+
+  #undo-btn::before {
+    content: "←";
+  }
+
+  #hint-btn::before {
+    content: "?";
   }
 }
 
 /* Level Grid Layout */
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 buttons per row */
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
   margin: 25px 0;
   max-height: 400px;
-  overflow-y: auto; /* Scroll if there are many levels */
+  overflow-y: auto;
   padding: 10px;
 }
 

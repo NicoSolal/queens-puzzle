@@ -199,9 +199,6 @@ function setupEventListeners() {
       const paddedNum = currentPuzzleNumber.toString().padStart(3, "0");
       const puzzleId = `${prefix}${paddedNum}`;
 
-      if (success === null)
-        document.getElementById("play-next-btn").dissable = true;
-
       const success = await loadSpecificPuzzle(puzzleId);
 
       if (success === null) {
