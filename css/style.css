@@ -111,7 +111,7 @@ body {
 
 #theme-container {
   position: absolute;
-  left: 20px; /* Pinned to the top left */
+  left: 20px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -119,11 +119,11 @@ body {
 }
 
 header {
-  margin-bottom: 0; /* Remove old margin to keep top bar thin */
+  margin-bottom: 0;
 }
 
 header h1 {
-  font-size: 40px; /* Slightly smaller than your original 48px for better fit */
+  font-size: 40px;
   margin: 0;
   transition: font-size 0.3s ease;
 }
@@ -154,6 +154,34 @@ header h1 {
 }
 
 @media (max-width: 12000px) {
+  #tutorial-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .tutorial-image-frame {
+    width: min(620px, 92vw);
+    height: min(620px, 92vh);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tutorial-image-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+  }
+
   #main-options-btn::before {
     content: "⛭";
     font-size: 18px;
@@ -562,12 +590,6 @@ button.secondary {
   transform: scale(1.1);
 }
 
-@media (max-width: 480px) {
-  .level-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
 /* --- Updated Structural Layout --- */
 #top-bar {
   position: relative;
@@ -628,6 +650,14 @@ header h1 {
 
 #main-tutorial-btn {
   z-index: 1001;
+}
+
+#tutorial-text {
+  color: var(--accent-primary);
+  text-align: center;
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 22px;
 }
 
 /* The Main Window */
@@ -770,7 +800,37 @@ header h1 {
   padding-top: 50px;
 }
 
+/* Tutorial overlay window */
+.tutorial-card {
+  position: relative;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--accent-primary);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: min(900px, 92vw);
+  max-height: 85vh;
+  box-shadow: 0 0 50px rgba(0, 217, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#tutorial-image {
+  width: 100%;
+  height: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile specifics */
+
 @media (max-width: 480px) {
+  .level-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   .options-mobile-card {
     width: 100%;
     height: 100%;
@@ -841,6 +901,24 @@ header h1 {
 
   #main-options-btn::before {
     content: "⛭";
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  #main-tutorial-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+
+  #main-tutorial-btn::before {
+    content: "?";
     font-size: 18px;
     font-weight: bold;
   }

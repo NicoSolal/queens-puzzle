@@ -236,6 +236,82 @@ function setupEventListeners() {
     document.getElementById("level-selection").classList.add("hidden");
     document.getElementById("main-menu").classList.remove("hidden");
   });
+
+  setupTutorial();
+}
+
+function setupTutorial() {
+  const tutorialSteps = [
+    {
+      img: "assets/images/tutorial1.png",
+      text: "Place each queen on it's corresponding color.",
+    },
+    {
+      img: "assets/images/tutorial2.png",
+      text: "Queens can’t share row, column, region or adjacent cells.",
+    },
+    {
+      img: "assets/images/tutorial3.png",
+      text: "Use X marks to block impossible cells.",
+    },
+  ];
+
+  let tutorialIndex = 0;
+
+  const tutorialBtn = document.getElementById("main-tutorial-btn");
+  const tutorialOverlay = document.getElementById("tutorial-overlay");
+  const tutorialImg = document.getElementById("tutorial-image");
+  const tutorialText = document.getElementById("tutorial-text");
+  const closeTutorialBtn = document.getElementById("close-tutorial-btn");
+  const nextBtn = document.getElementById("tutorial-next-btn");
+  const prevBtn = document.getElementById("tutorial-prev-btn");
+
+  function renderTutorialStep() {
+    const step = tutorialSteps[tutorialIndex];
+    tutorialImg.src = step.img;
+
+    if (tutorialText) tutorialText.textContent = step.text ?? "";
+
+    if (prevBtn) prevBtn.disabled = tutorialIndex === 0;
+    if (nextBtn) nextBtn.disabled = tutorialIndex === tutorialSteps.length - 1;
+  }
+
+  function openTutorial() {
+    tutorialIndex = 0;
+    renderTutorialStep();
+    tutorialOverlay.classList.remove("hidden");
+  }
+
+  function closeTutorial() {
+    tutorialOverlay.classList.add("hidden");
+  }
+
+  tutorialBtn.addEventListener("click", openTutorial);
+  closeTutorialBtn.addEventListener("click", closeTutorial);
+
+  nextBtn.addEventListener("click", () => {
+    if (tutorialIndex < tutorialSteps.length - 1) {
+      tutorialIndex++;
+      renderTutorialStep();
+    }
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (tutorialIndex > 0) {
+      tutorialIndex--;
+      renderTutorialStep();
+    }
+  });
+
+  tutorialOverlay.addEventListener("click", (e) => {
+    if (e.target === tutorialOverlay) closeTutorial();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !tutorialOverlay.classList.contains("hidden")) {
+      closeTutorial();
+    }
+  });
 }
 
 async function showLevelSelection(diff) {
