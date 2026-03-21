@@ -38,6 +38,11 @@ export class Cell {
     return true;
   }
 
+  // Get cell state
+  getState() {
+    return this.state;
+  }
+
   // Place a mark (X) - user action
   placeMark() {
     if (this.isEmpty()) {

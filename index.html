@@ -28,7 +28,8 @@
               <button
                 class="round-toggle"
                 id="toggle-sound"
-                data-state="on"
+                data-state="off"
+                disabled
               ></button>
             </div>
 
@@ -37,7 +38,8 @@
               <button
                 class="round-toggle"
                 id="toggle-music"
-                data-state="on"
+                data-state="off"
+                disabled
               ></button>
             </div>
 
@@ -53,6 +55,17 @@
               </div>
             </div>
 
+            <hr class="menu-divider" />
+
+            <div class="setting-row">
+              <span class="setting-label">Easy Mode</span>
+              <button
+                class="round-toggle"
+                id="toggle-easy"
+                data-state="on"
+              ></button>
+            </div>
+
             <button id="close-options-btn" class="primary">Back to Game</button>
           </div>
         </div>
@@ -61,6 +74,18 @@
           <h1>Queens ♛</h1>
           <p id="tagline">No two queens touch each other</p>
         </header>
+
+        <div id="tutorial-container">
+          <button id="main-tutorial-btn" title="Tutorial"></button>
+
+          <div id="tutorial-content" class="hidden">
+            <h2>How to Play</h2>
+            <p>
+              Place 8 queens on the board so that no two queens threaten each
+              other. Use the hints and undo buttons if you get stuck!
+            </p>
+          </div>
+        </div>
       </div>
 
       <div id="main-menu" class="screen-container">
@@ -114,7 +139,7 @@
 
             <div class="controls-container">
               <button id="reset-btn"></button>
-              <button id="undo-btn" disabled></button>
+              <button id="undo-btn"></button>
               <button id="hint-btn"></button>
             </div>
 

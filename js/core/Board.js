@@ -1,6 +1,8 @@
 // Board.js - Manages the game board state and operations
 
 import { Cell } from "./Cell.js";
+import { Move } from "./Move.js";
+import { getMode } from "../main.js";
 import {
   GAME_CONFIG,
   isValidPosition,
@@ -8,10 +10,14 @@ import {
 } from "../utils/constants.js";
 
 export class Board {
-  constructor(size = GAME_CONFIG.BOARD_SIZE) {
+  constructor(size = GAME_CONFIG.BOARD_SIZE, solution = null) {
     this.size = size;
     this.grid = [];
     this.queens = [];
+    this.history = [];
+    this.easyMode = getMode();
+    this.solution = solution;
+    this.isSolved = false;
     this.initializeGrid();
   }
 
@@ -94,134 +100,153 @@ export class Board {
 
   // Handle cell click - main interaction logic
   handleCellClick(row, col) {
+    let placedQueen = false;
+    this.easyMode = getMode();
+
     const cell = this.getCell(row, col);
     if (!cell) return false;
 
+    const move = new Move({ row, col, action: "click" });
+    move.begin(this);
+
+    let changed = false;
+
     if (cell.isEmpty()) {
-      return cell.placeMark();
-    }
-
-    if (cell.isMarked()) {
-      if (!this.canPlaceQueen(row, col)) {
-        console.log("Cannot place queen here - violates rules!");
-        return false;
+      const ok = this.applyCellChange(row, col, move, (c) => c.placeMark());
+      changed = ok;
+    } else if (cell.isMarked()) {
+      if (this.easyMode === "on") {
+        if (!this.canPlaceQueen(row, col)) {
+          console.log("Cannot place queen here - violates rules!");
+          return false;
+        }
       }
 
-      const success = cell.placeQueen();
-      if (success) {
-        this.queens[this.queens.length] = { row, col };
-        this.autoMarkAdjacentCells(row, col);
-        this.autoMarkCellRegion(cell.regionId);
-        return true;
-      }
-    }
+      const ok = this.applyCellChange(row, col, move, (c) => c.placeQueen());
+      if (ok) {
+        this.queens.push({ row, col });
+        changed = true;
+        placedQueen = true;
 
-    if (cell.hasQueen()) {
+        if (this.easyMode === "on") {
+          this.autoMarkAdjacentCells(row, col, move);
+          this.autoMarkCellRegion(cell.regionId, move);
+        }
+      }
+    } else if (cell.hasQueen()) {
       const index = this.queens.findIndex(
         (q) => q.row === row && q.col === col
       );
       if (index !== -1) {
         this.queens.splice(index, 1);
+        changed = true;
       }
 
-      cell.clear();
-      this.autoClearAdjacentCells(row, col);
-      this.autoClearCellRegion(cell.regionId);
+      this.applyCellChange(row, col, move, (c) => c.clear());
 
-      this.queens.forEach((queen) => {
-        this.autoMarkAdjacentCells(queen.row, queen.col);
-        this.autoMarkCellRegion(this.getCell(queen.row, queen.col).regionId);
-      });
-      return true;
+      if (this.easyMode === "on") {
+        this.autoClearAdjacentCells(row, col, move);
+        this.autoClearCellRegion(cell.regionId, move);
+
+        this.queens.forEach((q) => {
+          this.autoMarkAdjacentCells(q.row, q.col, move);
+          const qCell = this.getCell(q.row, q.col);
+          this.autoMarkCellRegion(qCell.regionId, move);
+        });
+      }
     }
+
+    move.finish(this);
+
+    if (!move.isEmpty() || changed) {
+      this.history.push(move);
+    }
+
+    if (placedQueen && this.solution) {
+      const solved = this.checkWin(this.solution);
+      if (solved) {
+        this.isSolved = true;
+      }
+    }
+
+    return true;
   }
 
-  autoMarkAdjacentCells(queenRow, queenCol) {
-    // Mark all cells in the same row
+  autoMarkAdjacentCells(queenRow, queenCol, move) {
     for (let col = 0; col < this.size; col++) {
-      if (col !== queenCol) {
-        const cell = this.getCell(queenRow, col);
-        if (cell?.isEmpty()) {
-          cell.placeMark();
-        }
+      if (col === queenCol) continue;
+      const cell = this.getCell(queenRow, col);
+      if (cell?.isEmpty()) {
+        this.applyCellChange(queenRow, col, move, (c) => c.placeMark());
       }
     }
 
     for (let row = 0; row < this.size; row++) {
-      if (row !== queenRow) {
-        const cell = this.getCell(row, queenCol);
-        if (cell?.isEmpty()) {
-          cell.placeMark();
-        }
+      if (row === queenRow) continue;
+      const cell = this.getCell(row, queenCol);
+      if (cell?.isEmpty()) {
+        this.applyCellChange(row, queenCol, move, (c) => c.placeMark());
       }
     }
 
     const adjacentPositions = getAdjacentPositions(queenRow, queenCol);
     adjacentPositions.forEach((pos) => {
-      if (pos.row !== queenRow || pos.col !== queenCol) {
-        const cell = this.getCell(pos.row, pos.col);
-        if (
-          cell &&
-          isValidPosition(pos.row, pos.col, this.size) &&
-          cell.isEmpty()
-        ) {
-          cell.placeMark();
-        }
+      if (!isValidPosition(pos.row, pos.col, this.size)) return;
+      if (pos.row === queenRow && pos.col === queenCol) return;
+
+      const cell = this.getCell(pos.row, pos.col);
+      if (cell?.isEmpty()) {
+        this.applyCellChange(pos.row, pos.col, move, (c) => c.placeMark());
       }
     });
   }
 
-  autoClearAdjacentCells(queenRow, queenCol) {
+  autoClearAdjacentCells(queenRow, queenCol, move) {
     for (let col = 0; col < this.size; col++) {
-      if (col !== queenCol) {
-        const cell = this.getCell(queenRow, col);
-        if (cell?.isMarked()) {
-          cell.clear();
-        }
+      if (col === queenCol) continue;
+      const cell = this.getCell(queenRow, col);
+      if (cell?.isMarked()) {
+        this.applyCellChange(queenRow, col, move, (c) => c.clear());
       }
     }
 
     for (let row = 0; row < this.size; row++) {
-      if (row !== queenRow) {
-        const cell = this.getCell(row, queenCol);
-        if (cell?.isMarked()) {
-          cell.clear();
-        }
+      if (row === queenRow) continue;
+      const cell = this.getCell(row, queenCol);
+      if (cell?.isMarked()) {
+        this.applyCellChange(row, queenCol, move, (c) => c.clear());
       }
     }
 
     const adjacentPositions = getAdjacentPositions(queenRow, queenCol);
     adjacentPositions.forEach((pos) => {
-      if (pos.row !== queenRow || pos.col !== queenCol) {
-        const cell = this.getCell(pos.row, pos.col);
-        if (
-          cell &&
-          isValidPosition(pos.row, pos.col, this.size) &&
-          cell.isMarked()
-        ) {
-          cell.clear();
-        }
+      if (!isValidPosition(pos.row, pos.col, this.size)) return;
+      if (pos.row === queenRow && pos.col === queenCol) return;
+
+      const cell = this.getCell(pos.row, pos.col);
+      if (cell?.isMarked()) {
+        this.applyCellChange(pos.row, pos.col, move, (c) => c.clear());
       }
     });
   }
 
-  autoMarkCellRegion(regionId) {
+  autoMarkCellRegion(regionId, move) {
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         const cell = this.getCell(row, col);
         if (cell.regionId === regionId && cell.isEmpty()) {
-          cell.placeMark();
+          this.applyCellChange(row, col, move, (c) => c.placeMark());
         }
       }
     }
   }
 
-  autoClearCellRegion(regionId) {
+  autoClearCellRegion(regionId, move) {
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         const cell = this.getCell(row, col);
         if (cell.regionId === regionId && cell.isMarked()) {
-          cell.clear();
+          this.applyCellChange(row, col, move, (c) => c.clear());
         }
       }
     }
@@ -239,12 +264,13 @@ export class Board {
 
   // Check if board is complete (has correct number of queens)
   isComplete() {
-    return this.queens.length === this.size;
+    return this.isSolved;
   }
 
   // Clear the entire board
   clear() {
     this.queens = [];
+    this.history = [];
     for (let row = 0; row < this.size; row++) {
       for (let col = 0; col < this.size; col++) {
         this.grid[row][col].clear();
@@ -252,7 +278,44 @@ export class Board {
     }
   }
 
-  // Get board state as 2D array of symbols (for debugging)
+  undo() {
+    const last = this.history.pop();
+    if (!last) return false;
+    last.undo(this);
+    return true;
+  }
+
+  applyCellChange(row, col, move, changeFn) {
+    const cell = this.getCell(row, col);
+    if (!cell) return false;
+
+    const before = cell.state;
+    const ok = changeFn(cell);
+    const after = cell.state;
+
+    if (move && before !== after) {
+      move.recordCellChange(row, col, before, after);
+    }
+
+    return ok !== false;
+  }
+
+  checkWin(solution) {
+    if (!Array.isArray(solution)) return false;
+
+    if (this.queens.length !== solution.length) return false;
+
+    const queensSet = new Set(this.queens.map((q) => `${q.row},${q.col}`));
+    if (queensSet.size !== solution.length) return false; // guards duplicates
+
+    for (const pos of solution) {
+      if (!queensSet.has(`${pos.row},${pos.col}`)) return false;
+    }
+
+    return true;
+  }
+
+  // Debug helper
   toStringGrid() {
     let output = "";
     for (let row = 0; row < this.size; row++) {
@@ -264,7 +327,7 @@ export class Board {
     return output;
   }
 
-  // Print board to console (for debugging)
+  // Print board for debugging
   print() {
     console.log(this.toStringGrid());
   }

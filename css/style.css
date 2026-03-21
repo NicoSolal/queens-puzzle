@@ -160,6 +160,12 @@ header h1 {
     font-weight: bold;
   }
 
+  #main-tutorial-btn::before {
+    content: "Tutorial";
+    font-size: 16px;
+    font-weight: bold;
+  }
+
   #reset-btn::before {
     content: "Reset";
   }
@@ -175,53 +181,6 @@ header h1 {
 
 #theme-menu.show {
   display: flex;
-}
-
-/* --- MOBILE RESPONSIVE FIXES --- */
-@media (max-width: 480px) {
-  #top-bar {
-    min-height: 60px;
-    padding: 5px 10px;
-  }
-
-  #theme-container {
-    left: 10px;
-  }
-
-  header h1 {
-    font-size: 24px;
-  }
-
-  #main-options-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-  }
-
-  #main-options-btn::before {
-    content: "⛭";
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  #tagline {
-    display: none;
-  }
-
-  #theme-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
-
-  #theme-menu {
-    min-width: 120px;
-  }
 }
 
 /* Side panel */
@@ -613,7 +572,7 @@ button.secondary {
 #top-bar {
   position: relative;
   display: flex;
-  justify-content: center; /* This centers the title in the exact middle */
+  justify-content: center;
   align-items: center;
   width: 100%;
   padding: 15px 20px;
@@ -658,10 +617,23 @@ header h1 {
   z-index: 2000;
 }
 
-/* The Main Window (☰ Menu) */
+/* Container pinned to top-right */
+#tutorial-container {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2000;
+}
+
+#main-tutorial-btn {
+  z-index: 1001;
+}
+
+/* The Main Window */
 #options-menu {
   position: absolute;
-  top: 110%; /* Just below the ☰ button */
+  top: 110%;
   left: 0;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -676,6 +648,10 @@ header h1 {
 
 /* Nested Theme Menu */
 #theme-selection-wrapper {
+  position: relative;
+}
+
+#easy-mode-wrapper {
   position: relative;
 }
 
@@ -835,4 +811,50 @@ header h1 {
 }
 .round-toggle[data-state="off"]::before {
   content: "Off";
+}
+
+@media (max-width: 480px) {
+  #top-bar {
+    min-height: 60px;
+    padding: 5px 10px;
+  }
+
+  #theme-container {
+    left: 10px;
+  }
+
+  header h1 {
+    font-size: 24px;
+  }
+
+  #main-options-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+  }
+
+  #main-options-btn::before {
+    content: "⛭";
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  #tagline {
+    display: none;
+  }
+
+  #theme-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  #theme-menu {
+    min-width: 120px;
+  }
 }

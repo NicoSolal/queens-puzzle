@@ -141,6 +141,7 @@ function setupEventListeners() {
 
   setupToggle("toggle-sound");
   setupToggle("toggle-music");
+  setupToggle("toggle-easy");
 
   const boardElement = document.getElementById("game-board");
 
@@ -180,6 +181,8 @@ function setupEventListeners() {
 
   document.getElementById("reset-btn").addEventListener("click", resetGame);
 
+  document.getElementById("undo-btn").addEventListener("click", undoMove);
+
   document
     .getElementById("play-next-btn")
     .addEventListener("click", async () => {
@@ -209,6 +212,9 @@ function setupEventListeners() {
     });
 
   document.getElementById("close-victory-btn").addEventListener("click", () => {
+    stopTimer();
+    document.getElementById("game-screen").classList.add("hidden");
+    document.getElementById("main-menu").classList.remove("hidden");
     document.getElementById("victory-overlay").classList.add("hidden");
   });
 
@@ -289,7 +295,7 @@ async function loadSpecificPuzzle(puzzleId) {
   currentPuzzle = await getPuzzleById(puzzleId);
 
   if (currentPuzzle) {
-    board = new Board(currentPuzzle.size);
+    board = new Board(currentPuzzle.size, currentPuzzle.solution);
     board.setRegions(currentPuzzle.regions);
 
     hasWon = false;
@@ -356,15 +362,34 @@ function showVictoryScreen() {
 }
 
 function updateStats() {
-  document.getElementById(
-    "queens-count"
-  ).textContent = `${board.getQueenCount()} / ${board.size}`;
+  let queenCount = board.getQueenCount();
+  let boardSize = board.size;
+
+  if (queenCount > boardSize) {
+    document.getElementById("queens-count").textContent = `${
+      queenCount + "?"
+    } / ${boardSize}`;
+  } else {
+    document.getElementById(
+      "queens-count"
+    ).textContent = `${queenCount} / ${boardSize}`;
+  }
 }
 
 function resetGame() {
   board.clear();
   updateBoardDisplay();
   console.log("Game reset");
+}
+
+function undoMove() {
+  const success = board.undo();
+  if (success) {
+    updateBoardDisplay();
+    console.log("Move undone");
+  } else {
+    console.log("No moves to undo");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
@@ -413,4 +438,8 @@ function updateTimerDisplay() {
   const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
   document.getElementById("timer").textContent = formattedTime;
   document.getElementById("score").textContent = score;
+}
+
+export function getMode() {
+  return document.getElementById("toggle-easy").dataset.state;
 }
